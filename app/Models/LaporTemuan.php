@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LaporHilang extends Model
+class LaporTemuan extends Model
 {
-    protected $table = 'lapor_hilang';
+    protected $table = 'lapor_temuan';
 
     protected $primaryKey = 'id';
 
@@ -19,9 +19,9 @@ class LaporHilang extends Model
         return $this->belongsTo(User::class, 'user_whatsapp', 'whatsapp');
     }
 
-    public function komentarHilang()
+    public function komentarTemuan()
     {
-        return $this->hasMany(KomentarHilang::class, 'id_hilang', 'id');
+        return $this->hasMany(KomentarTemuan::class, 'id_temuan', 'id');
     }
 
     // public $timestamps = false;
