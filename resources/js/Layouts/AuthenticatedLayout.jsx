@@ -23,14 +23,33 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
+                            <div className="hidden sm:ms-10 sm:flex sm:items-center space-x-8">
+                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                     Dashboard
                                 </NavLink>
+
+                                <div className="relative group">
+                                    <button className="inline-flex items-center px-1 pt-0 text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 focus:outline-none dark:text-gray-400 dark:hover:text-white">
+                                        Temu Kembali
+                                        <svg className="ms-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.585l3.71-3.355a.75.75 0 111.02 1.1l-4 3.615a.75.75 0 01-1.02 0l-4-3.615a.75.75 0 01.02-1.1z" />
+                                        </svg>
+                                    </button>
+
+                                    <div className="absolute left-0 z-50 mt-0 hidden w-48 rounded-md bg-white shadow-lg group-hover:block dark:bg-gray-800">
+                                        <div className="py-1 text-sm text-gray-700 dark:text-gray-200">
+                                            <Link href={route('kehilangan.index')} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                Daftar Kehilangan
+                                            </Link>
+                                            {/* <Link href={route('kehilangan.create')} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                Create
+                                            </Link> */}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
+
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
