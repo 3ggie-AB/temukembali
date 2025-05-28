@@ -45,4 +45,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function laporHilang()
+    {
+        return $this->hasMany(LaporHilang::class, 'user_whatsapp', 'whatsapp');
+    }
+    public function laporTemuan()
+    {
+        return $this->hasMany(LaporTemuan::class, 'user_whatsapp', 'whatsapp');
+    }
 }
