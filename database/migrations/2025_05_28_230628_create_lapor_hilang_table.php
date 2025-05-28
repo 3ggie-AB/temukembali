@@ -18,9 +18,11 @@ return new class extends Migration
             $table->string('provinsi_hilang');
             $table->string('kota_hilang');
             $table->dateTime('tanggal_hilang');
-            $table->string('barang_1')->nullable();
-            $table->string('barang_2')->nullable();
-            $table->string('barang_3')->nullable();
+            $table->string('barang_kategori')->nullable();
+            $table->string('barang_warna')->nullable();
+            $table->string('barang_merk')->nullable();
+            $table->text('barang_cirikhusus')->nullable();
+            $table->string('status')->default('hilang');
             $table->integer('jumlah_dilihat')->default(0);
             $table->timestamps();
 
