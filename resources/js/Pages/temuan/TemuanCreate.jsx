@@ -6,15 +6,15 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 export default function TemuanCreate({ auth }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         deskripsi: "",
+        tanggal_ditemukan: "",
         provinsi_temuan: "",
         kota_temuan: "",
-        tanggal_temuan: "",
         barang_kategori: "",
         barang_warna: "",
         barang_merk: "",
-        status: "Baru", // default status
-        provinsi_hilang: "", // tambahkan
-        kota_hilang: "",     // tambahkan
+        status: "ditemukan", 
+        provinsi_hilang: "", 
+        kota_hilang: "",  
     });
 
     function handleSubmit(e) {
@@ -51,6 +51,16 @@ export default function TemuanCreate({ auth }) {
                     <form onSubmit={handleSubmit}>
 
                         <div className="mb-4">
+                            <div className="mb-4">
+                                <label htmlFor="user_whatsapp">Nomor WhatsApp</label>
+                                <input
+                                    type="number"
+                                    id="user_whatsapp"
+                                    value={data.user_whatsapp}
+                                    onChange={(e) => setData("user_whatsapp", e.target.value)}
+                                    required
+                                />
+                            </div>
                             <label htmlFor="deskripsi" className="block font-medium text-gray-700 dark:text-gray-300">
                                 Deskripsi
                             </label>
@@ -76,7 +86,6 @@ export default function TemuanCreate({ auth }) {
                                     value={data.provinsi_temuan}
                                     onChange={(e) => setData("provinsi_temuan", e.target.value)}
                                     className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    required
                                 />
                                 {errors.provinsi_temuan && <p className="text-red-600 text-sm mt-1">{errors.provinsi_temuan}</p>}
                             </div>
@@ -91,25 +100,24 @@ export default function TemuanCreate({ auth }) {
                                     value={data.kota_temuan}
                                     onChange={(e) => setData("kota_temuan", e.target.value)}
                                     className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                                    required
                                 />
                                 {errors.kota_temuan && <p className="text-red-600 text-sm mt-1">{errors.kota_temuan}</p>}
                             </div>
                         </div>
 
                         <div className="mb-4">
-                            <label htmlFor="tanggal_temuan" className="block font-medium text-gray-700 dark:text-gray-300">
-                                Tanggal Temuan
+                            <label htmlFor="tanggal_ditemukan" className="block font-medium text-gray-700 dark:text-gray-300">
+                                Tanggal Ditemukan
                             </label>
                             <input
                                 type="date"
-                                id="tanggal_temuan"
-                                value={data.tanggal_temuan}
-                                onChange={(e) => setData("tanggal_temuan", e.target.value)}
+                                id="tanggal_ditemukan"
+                                value={data.tanggal_ditemukan}
+                                onChange={(e) => setData("tanggal_ditemukan", e.target.value)}
                                 className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                                 required
                             />
-                            {errors.tanggal_temuan && <p className="text-red-600 text-sm mt-1">{errors.tanggal_temuan}</p>}
+                            {errors.tanggal_ditemukan && <p className="text-red-600 text-sm mt-1">{errors.tanggal_ditemukan}</p>}
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
@@ -166,6 +174,7 @@ export default function TemuanCreate({ auth }) {
                                 onChange={(e) => setData("status", e.target.value)}
                                 className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
                             >
+                                <option value="Ditemukan">Ditemukan</option>
                                 <option value="Baru">Baru</option>
                                 <option value="Diproses">Diproses</option>
                                 <option value="Selesai">Selesai</option>
@@ -173,20 +182,19 @@ export default function TemuanCreate({ auth }) {
                             {errors.status && <p className="text-red-600 text-sm mt-1">{errors.status}</p>}
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex justify-end gap-2">
                             <Link
                                 href={route("temuan.index")}
-                                className="inline-block px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+                                className="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
                             >
                                 Batal
                             </Link>
-
                             <button
                                 type="submit"
                                 disabled={processing}
                                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                             >
-                                Simpan
+                                Laporkan
                             </button>
                         </div>
                     </form>

@@ -200,7 +200,7 @@ export default function KehilanganCreate({ auth }) {
                                 disabled={processing}
                                 className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200 disabled:opacity-50"
                             >
-                                Simpan
+                                Laporkan
                             </button>
                         </div>
                     </form>
