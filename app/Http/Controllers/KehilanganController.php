@@ -69,7 +69,9 @@ class KehilanganController extends Controller
     }
     public function show($id)
     {
-        $kehilangan = LaporHilang::findOrFail($id);
+        $kehilangan = LaporHilang::with('provinsi', 'kota')
+            ->findOrFail($id);
+            // dd($kehilangan);
 
         return Inertia::render('kehilangan/KehilanganShow', [
             'kehilangan' => $kehilangan,

@@ -12,14 +12,14 @@ export default function KehilanganList({ auth }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fungsi fetch komentar
+        let intervalId;
+
         const fetchKomentar = async () => {
             try {
                 const response = await fetch(`/komentar-hilang-new/${kehilangan.id}`);
                 if (!response.ok) throw new Error("Failed to fetch komentar");
                 const data = await response.json();
-                // console.log("Komentar data:", data); // Debugging log
-                setKomentarList(data);
+                setKomentarList(data); // asumsi data adalah array, atau bungkus dalam array jika 1 objek
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -27,7 +27,14 @@ export default function KehilanganList({ auth }) {
             }
         };
 
+        // Panggil pertama kali saat komponen dimuat
         fetchKomentar();
+
+        // Set interval untuk update setiap 10 detik
+        intervalId = setInterval(fetchKomentar, 10000);
+
+        // Bersihkan interval saat komponen unmount
+        return () => clearInterval(intervalId);
     }, [kehilangan.id]);
 
     return (
@@ -47,18 +54,29 @@ export default function KehilanganList({ auth }) {
                             <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">Detail Kehilangan</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
                                 <div>
-                                    <p><span className="font-semibold">Kategori:</span> Handphone</p>
-                                    <p><span className="font-semibold">Merk:</span> Iphone</p>
-                                    <p><span className="font-semibold">Warna:</span> Ungu</p>
-                                    <p><span className="font-semibold">Ciri Khusus:</span> Kesing HP dengan desain bunga merah</p>
-                                    <p><span className="font-semibold">Deskripsi:</span> Iphone x 25 x pro</p>
+                                    <p><span className="font-semibold">Kategori:</span> {kehilangan.barang_kategori}</p>
+                                    <p><span className="font-semibold">Merk:</span> {kehilangan.barang_merk}</p>
+                                    <p><span className="font-semibold">Warna:</span> {kehilangan.barang_warna}</p>
+                                    <p><span className="font-semibold">Ciri Khusus:</span> {kehilangan.barang_cirikhusus}</p>
+                                    <p><span className="font-semibold">Deskripsi:</span> {kehilangan.deskripsi}</p>
                                 </div>
                                 <div>
-                                    <p><span className="font-semibold">Status:</span> Hilang</p>
-                                    <p><span className="font-semibold">Tanggal Hilang:</span> 31 Mei 2025</p>
-                                    <p><span className="font-semibold">Provinsi:</span> 15</p>
-                                    <p><span className="font-semibold">Kota:</span> 1506</p>
-                                    <p><span className="font-semibold">Dilihat:</span> 0 kali</p>
+                                    <p><span className="font-semibold">Status:</span> {kehilangan.status}</p>
+                                    <p>
+                                        <span className="font-semibold">Tanggal Hilang:</span>{" "}
+                                        {new Date(kehilangan.tanggal_hilang).toLocaleString("id-ID", {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: false,
+                                            timeZone: "Asia/Jakarta"
+                                        })} WIB
+                                    </p>
+                                    <p className="capitalize"><span className="font-semibold">Provinsi:</span> {kehilangan.provinsi.name.toLowerCase()}</p>
+                                    <p className="capitalize"><span className="font-semibold">Kota:</span> {kehilangan.kota.name.toLowerCase()}</p>
+                                    <p><span className="font-semibold">Dilihat:</span> {kehilangan.jumlah_dilihat} kali</p>
                                     <p><span className="font-semibold">Hubungi WA:</span> <a href="https://wa.me/6285875477953" target="_blank" className="text-blue-500 hover:underline" rel="noreferrer">6285875477953</a></p>
                                 </div>
                             </div>
@@ -69,52 +87,62 @@ export default function KehilanganList({ auth }) {
                 <div className="bg-white mx-auto sm:px-6 lg:px-8 p-6 mt-4 shadow-sm sm:rounded-lg">
                     <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Komentar :</h3>
 
-                    {loading && <p>Loading komentar...</p>}
-                    {error && <p className="text-red-500">Error: {error}</p>}
+                    {loading && (
+                        <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3 mb-4">
+                            <p className="text-gray-500 mb-4">Sedang Memuat Komentar...</p>
+                        </div>
+                    )}
+                    {error && (
+                        <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3 mb-4">
+                            <p className="text-gray-500 mb-4">Tidak ada komentar...</p>
+                        </div>
+                    )}
 
                     <div className="space-y-4">
                         {!loading && !komentarList && (
-                            <p className="text-gray-500">Tidak ada komentar.</p>
+                            <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3 mb-4">
+                                <p className="text-gray-500 mb-4">Tidak ada komentar...</p>
+                            </div>
                         )}
 
-                        {komentarList && (
+                        {!error && !loading && komentarList && (
                             <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3">
-                                    <img
-                                        src={komentarList.user?.photo || "/default/profile.png"}
-                                        alt={komentarList.user?.name}
-                                        className="w-10 h-10 rounded-full object-cover"
-                                    />
-                                    <div>
-                                        <p className="text-xs font-medium text-gray-400 dark:text-white">
-                                            {'@' + (komentarList.user?.name || "Pengguna")} - {
-                                                komentarList.created_at ? (() => {
-                                                    const created = new Date(komentarList.created_at);
-                                                    const now = new Date();
-                                                    const diffMs = now - created;
-                                                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                                                    const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
+                                <img
+                                    src={komentarList.user?.photo || "/default/profile.png"}
+                                    alt={komentarList.user?.name}
+                                    className="w-10 h-10 rounded-full object-cover"
+                                />
+                                <div>
+                                    <p className="text-xs font-medium text-gray-400 dark:text-white">
+                                        {'@' + (komentarList.user?.name || "Pengguna")} - {
+                                            komentarList.created_at ? (() => {
+                                                const created = new Date(komentarList.created_at);
+                                                const now = new Date();
+                                                const diffMs = now - created;
+                                                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                                                const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
 
-                                                    if (diffHours > 0) {
-                                                        return `${diffHours} jam yang lalu`;
-                                                    } else if (diffMinutes > 0) {
-                                                        return `${diffMinutes} menit yang lalu`;
-                                                    } else {
-                                                        return 'Baru saja';
-                                                    }
-                                                })() : 'Waktu tidak tersedia'}
-                                        </p>
+                                                if (diffHours > 0) {
+                                                    return `${diffHours} jam yang lalu`;
+                                                } else if (diffMinutes > 0) {
+                                                    return `${diffMinutes} menit yang lalu`;
+                                                } else {
+                                                    return 'Baru saja';
+                                                }
+                                            })() : 'Waktu tidak tersedia'}
+                                    </p>
 
-                                        <p className="text-sm text-gray-800 dark:text-white">{komentarList.komentar}</p>
+                                    <p className="text-sm text-gray-800 dark:text-white">{komentarList.komentar}</p>
 
-                                        <span className="text-xs text-gray-500">
-                                            {komentarList.created_at ? new Date(komentarList.created_at).toLocaleDateString('id-ID', {
-                                                day: 'numeric',
-                                                month: 'long',
-                                                year: 'numeric'
-                                            }) : 'Tanggal tidak tersedia'}
-                                        </span>
-                                    </div>
+                                    <span className="text-xs text-gray-500">
+                                        {komentarList.created_at ? new Date(komentarList.created_at).toLocaleDateString('id-ID', {
+                                            day: 'numeric',
+                                            month: 'long',
+                                            year: 'numeric'
+                                        }) : 'Tanggal tidak tersedia'}
+                                    </span>
                                 </div>
+                            </div>
                         )}
 
                         <ModalKomentar id={kehilangan.id} />
