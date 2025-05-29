@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KehilanganController;
+use App\Http\Controllers\TemuanController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,6 +29,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/kehilangan', [KehilanganController::class, 'index'])->name('kehilangan.index');
     Route::get('/kehilangan/create', [KehilanganController::class, 'create'])->name('kehilangan.create');
     Route::post('/kehilangan', [KehilanganController::class, 'store'])->name('kehilangan.store');
+
+    Route::get('/temuan', [TemuanController::class, 'index'])->name('temuan.index');
+    Route::get('/temuan/create', [TemuanController::class, 'create'])->name('temuan.create');
+    Route::post('/temuan', [TemuanController::class, 'store'])->name('temuan.store');
+    Route::get('/temuan/{id}', [TemuanController::class, 'show'])->name('temuan.show');
+    Route::get('/temuan/saya/{id}/edit', [TemuanController::class, 'edit'])->name('temuan.edit');
+    Route::put('/temuan/{id}', [TemuanController::class, 'update'])->name('temuan.update');
+    Route::delete('/temuan/{id}', [TemuanController::class, 'destroy'])->name('temuan.destroy');
 });
 
 require __DIR__.'/auth.php';
