@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_whatsapp');
             $table->text('deskripsi');
-            $table->string('provinsi_temuan');
-            $table->string('kota_temuan');
+            $table->string('provinsi_temuan')->nullable();
+            $table->string('kota_temuan')->nullable();
             $table->dateTime('tanggal_temuan');
             $table->string('barang_kategori')->nullable();
             $table->string('barang_warna')->nullable();
