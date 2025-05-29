@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/kehilangan', [KehilanganController::class, 'index'])->name('kehilangan.index');
     Route::get('/kehilangan/create', [KehilanganController::class, 'create'])->name('kehilangan.create');
     Route::post('/kehilangan', [KehilanganController::class, 'store'])->name('kehilangan.store');
+    Route::get('/kehilangan/detail/{id}', [KehilanganController::class, 'show'])->name('kehilangan.detail');
 
     Route::get('/temuan', [TemuanController::class, 'index'])->name('temuan.index');
     Route::get('/temuan/create', [TemuanController::class, 'create'])->name('temuan.create');

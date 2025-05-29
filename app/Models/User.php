@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -52,5 +53,13 @@ class User extends Authenticatable
     public function laporTemuan()
     {
         return $this->hasMany(LaporTemuan::class, 'user_whatsapp', 'whatsapp');
+    }
+    public function getProfile()
+    {
+        if ($this->foto_profil && Storage::disk('public')->exists($this->foto_profil)) {
+            return Storage::url($this->foto_profil);
+        }
+
+        return asset('default/profile.png');
     }
 }

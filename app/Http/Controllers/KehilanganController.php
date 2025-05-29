@@ -67,4 +67,12 @@ class KehilanganController extends Controller
 
         return redirect()->route('kehilangan.index')->with('success', 'Laporan kehilangan berhasil dibuat!');
     }
+    public function show($id)
+    {
+        $kehilangan = LaporHilang::findOrFail($id);
+
+        return Inertia::render('kehilangan/KehilanganShow', [
+            'kehilangan' => $kehilangan,
+        ]);
+    }
 }

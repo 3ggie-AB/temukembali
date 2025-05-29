@@ -52,7 +52,7 @@ function ActionDropdown({ itemId }) {
                 >
                     <div className="py-1" role="none">
                         <Link
-                            href={`/kehilangan/${itemId}`}
+                            href={`/kehilangan/detail/${itemId}`}
                             className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                             role="menuitem"
                             tabIndex="-1"
