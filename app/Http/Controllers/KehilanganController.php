@@ -65,6 +65,6 @@ class KehilanganController extends Controller
             'jumlah_dilihat' => 0,
         ]);
 
-        return redirect()->route('kehilangan.create')->with('success', 'Laporan kehilangan berhasil dibuat!');
+        return redirect()->route('kehilangan.index')->with('success', 'Laporan kehilangan berhasil dibuat!');
     }
 }

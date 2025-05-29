@@ -1,8 +1,22 @@
 import React from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Provinsi } from '@/Components/laravolt/Provinsi';
+import { Kota } from '@/Components/laravolt/Kota';
 
 export default function KehilanganCreate({ auth }) {
+    const [provinsiId, setProvinsiId] = React.useState("")
+    const [kotaId, setKotaId] = React.useState("")
+
+    const handlePilihProvinsi = (id) => {
+        setProvinsiId(id)
+        setKotaId("") // reset kota jika provinsi ganti
+    }
+
+    const handlePilihKota = (id) => {
+        setKotaId(id);
+        setData('kota_hilang', id); // TAMBAHKAN INI
+    };
     const { data, setData, post, processing, errors } = useForm({
         deskripsi: '',
         provinsi_hilang: '',
@@ -109,6 +123,26 @@ export default function KehilanganCreate({ auth }) {
                         />
                         {errors.barang_cirikhusus && <p className="text-red-600 text-sm">{errors.barang_cirikhusus}</p>}
                     </div>
+
+                    <div>
+                        <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Pilih Provinsi Hilang
+                        </label>
+                        <Provinsi 
+                            className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.provinsi_id ? 'border-red-500' : 'border-gray-300'}`}
+                            onChange={(id) => {
+                                setData('provinsi_hilang', id);
+                                setProvinsiId(id);
+                                setKotaId("");
+                            }}
+                        />
+                        <Kota 
+                            className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.kota_id ? 'border-red-500' : 'border-gray-300'}`} 
+                            onChange={handlePilihKota} 
+                            ProvinsiKode={provinsiId}
+                        />
+                    </div>
+
 
                     <div className="md:col-span-2 flex justify-end">
                         <button

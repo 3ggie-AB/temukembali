@@ -17,7 +17,7 @@ export default function KehilanganList({ auth }) {
         <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
           <div className="mb-3">
               <Link href={route('kehilangan.create')} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                  Laporkan Kehilangan
+                  Buat Laporkan Kehilangan
               </Link>
           </div>
 
