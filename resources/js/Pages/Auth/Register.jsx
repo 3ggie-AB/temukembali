@@ -27,7 +27,11 @@ export default function Register() {
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <h2 className="text-2xl mt-2 font-bold text-gray-800 dark:text-white">
+                        Daftar Akunmu
+                    </h2>
+                    
+                    <InputLabel htmlFor="name" value="Name" className='mt-6' />
 
                     <TextInput
                         id="name"
@@ -102,19 +106,21 @@ export default function Register() {
                     />
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
+                <div className="mt-6 flex items-center justify-end">
+                    <PrimaryButton className="w-full justify-center" disabled={processing}>
+                        Sig up
                     </PrimaryButton>
                 </div>
             </form>
+            <p className="mt-6 text-center text-sm ">
+                Temu Kembali di sini.{' '}
+                <Link
+                    href={route('login')}
+                    className="font-medium text-indigo-600 hover:text-indigo-900"
+                >
+                    Ayo Masuk
+                </Link>
+            </p>
         </GuestLayout>
     );
 }
