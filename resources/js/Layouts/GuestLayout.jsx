@@ -9,7 +9,7 @@ export default function GuestLayout({ children }) {
                     <ApplicationLogo className="h-40 w-40 fill-current text-gray-500" />
                 </Link>
                 <h1 className="mt-0 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-                    Welcome Back Temu Kembali
+                    Welcome Back Temu Kembali!
                 </h1>
             </div>
 
