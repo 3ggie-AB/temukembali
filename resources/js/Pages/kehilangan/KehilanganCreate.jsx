@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-
-const provinsiKotaData = {
-    'Jawa Barat': ['Bandung', 'Bogor', 'Bekasi'],
-    'DKI Jakarta': ['Jakarta Selatan', 'Jakarta Barat', 'Jakarta Pusat'],
-    'Jawa Tengah': ['Semarang', 'Solo', 'Magelang'],
-};
+import { Provinsi } from '@/Components/laravolt/Provinsi';
+import { Kota } from '@/Components/laravolt/Kota';
 
 export default function KehilanganCreate({ auth }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -20,15 +16,20 @@ export default function KehilanganCreate({ auth }) {
         barang_cirikhusus: '',
     });
 
-    const [daftarProvinsi] = useState(Object.keys(provinsiKotaData));
-    const [daftarKota, setDaftarKota] = useState([]);
+    const [provinsiId, setProvinsiId] = useState('');
 
     useEffect(() => {
-        if (data.provinsi_hilang) {
-            setDaftarKota(provinsiKotaData[data.provinsi_hilang]);
-            setData('kota_hilang', ''); // reset kota saat provinsi berubah
-        }
+        setProvinsiId(data.provinsi_hilang || '');
+        setData('kota_hilang', '');
     }, [data.provinsi_hilang]);
+
+    const handleProvinsiChange = (id) => {
+        setData('provinsi_hilang', id);
+    };
+
+    const handleKotaChange = (id) => {
+        setData('kota_hilang', id);
+    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -49,6 +50,7 @@ export default function KehilanganCreate({ auth }) {
             <div className="grid grid-cols-12 gap-4 px-4">
                 <div className="col-span-12 m-6 p-6 bg-white dark:bg-gray-800 rounded shadow">
                     <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Deskripsi */}
                         <div className="md:col-span-2">
                             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Deskripsi
@@ -56,48 +58,58 @@ export default function KehilanganCreate({ auth }) {
                             <textarea
                                 value={data.deskripsi}
                                 onChange={(e) => setData('deskripsi', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.deskripsi ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
+                                    errors.deskripsi ? 'border-red-500' : 'border-gray-300'
+                                }`}
                                 rows={3}
                             />
                             {errors.deskripsi && <p className="text-red-600 text-sm">{errors.deskripsi}</p>}
                         </div>
 
-                        <div>
-                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Provinsi
-                            </label>
-                            <select
-                                value={data.provinsi_hilang}
-                                onChange={(e) => setData('provinsi_hilang', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.provinsi_hilang ? 'border-red-500' : 'border-gray-300'}`}
-                            >
-                                <option value="">Pilih Provinsi</option>
-                                {daftarProvinsi.map((prov, i) => (
-                                    <option key={i} value={prov}>{prov}</option>
-                                ))}
-                            </select>
-                            {errors.provinsi_hilang && <p className="text-red-600 text-sm">{errors.provinsi_hilang}</p>}
-                        </div>
+                        {/* Provinsi dan Kota */}
+                        <div className="md:col-span-2 grid grid-cols-2 gap-4">
+  {/* Provinsi */}
+  <div>
+    <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+      Pilih Provinsi Hilang
+    </label>
+    <Provinsi
+      className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
+        errors.provinsi_hilang ? 'border-red-500' : 'border-gray-300'
+      }`}
+      onChange={(id) => {
+        setData('provinsi_hilang', id);
+        setData('kota_hilang', '');
+      }}
+      value={data.provinsi_hilang}
+    />
+    {errors.provinsi_hilang && (
+      <p className="text-red-600 text-sm mt-1">{errors.provinsi_hilang}</p>
+    )}
+  </div>
 
-                        <div>
-                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Kota 
-                            </label>
-                            <select
-                                value={data.kota_hilang}
-                                onChange={(e) => setData('kota_hilang', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.kota_hilang ? 'border-red-500' : 'border-gray-300'}`}
-                                disabled={!data.provinsi_hilang}
-                            >
-                                <option value="">Pilih Kota</option>
-                                {daftarKota.map((kota, i) => (
-                                    <option key={i} value={kota}>{kota}</option>
-                                ))}
-                            </select>
-                            {errors.kota_hilang && <p className="text-red-600 text-sm">{errors.kota_hilang}</p>}
-                        </div>
+  {/* Kota */}
+  <div>
+    <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+      Pilih Kota Hilang
+    </label>
+    <Kota
+      className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
+        errors.kota_hilang ? 'border-red-500' : 'border-gray-300'
+      }`}
+      ProvinsiKode={data.provinsi_hilang}
+      onChange={(id) => setData('kota_hilang', id)}
+      value={data.kota_hilang}
+      disabled={!data.provinsi_hilang}
+    />
+    {errors.kota_hilang && (
+      <p className="text-red-600 text-sm mt-1">{errors.kota_hilang}</p>
+    )}
+  </div>
+</div>
 
-                        {/* Tanggal dan lainnya tetap */}
+
+                        {/* Tanggal Hilang */}
                         <div>
                             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Tanggal Hilang
@@ -106,11 +118,14 @@ export default function KehilanganCreate({ auth }) {
                                 type="date"
                                 value={data.tanggal_hilang}
                                 onChange={(e) => setData('tanggal_hilang', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.tanggal_hilang ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
+                                    errors.tanggal_hilang ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             />
                             {errors.tanggal_hilang && <p className="text-red-600 text-sm">{errors.tanggal_hilang}</p>}
                         </div>
 
+                        {/* Kategori Barang */}
                         <div>
                             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Kategori Barang
@@ -119,11 +134,16 @@ export default function KehilanganCreate({ auth }) {
                                 type="text"
                                 value={data.barang_kategori}
                                 onChange={(e) => setData('barang_kategori', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_kategori ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
+                                    errors.barang_kategori ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             />
-                            {errors.barang_kategori && <p className="text-red-600 text-sm">{errors.barang_kategori}</p>}
+                            {errors.barang_kategori && (
+                                <p className="text-red-600 text-sm">{errors.barang_kategori}</p>
+                            )}
                         </div>
 
+                        {/* Warna Barang */}
                         <div>
                             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Warna Barang
@@ -132,11 +152,14 @@ export default function KehilanganCreate({ auth }) {
                                 type="text"
                                 value={data.barang_warna}
                                 onChange={(e) => setData('barang_warna', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_warna ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
+                                    errors.barang_warna ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             />
                             {errors.barang_warna && <p className="text-red-600 text-sm">{errors.barang_warna}</p>}
                         </div>
 
+                        {/* Merk Barang */}
                         <div>
                             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Merk Barang
@@ -145,24 +168,32 @@ export default function KehilanganCreate({ auth }) {
                                 type="text"
                                 value={data.barang_merk}
                                 onChange={(e) => setData('barang_merk', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_merk ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
+                                    errors.barang_merk ? 'border-red-500' : 'border-gray-300'
+                                }`}
                             />
                             {errors.barang_merk && <p className="text-red-600 text-sm">{errors.barang_merk}</p>}
                         </div>
 
-                        <div>
+                        {/* Ciri Khas */}
+                        <div className="md:col-span-2">
                             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Ciri Khas
                             </label>
                             <textarea
                                 value={data.barang_cirikhusus}
                                 onChange={(e) => setData('barang_cirikhusus', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_cirikhusus ? 'border-red-500' : 'border-gray-300'}`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
+                                    errors.barang_cirikhusus ? 'border-red-500' : 'border-gray-300'
+                                }`}
                                 rows={3}
                             />
-                            {errors.barang_cirikhusus && <p className="text-red-600 text-sm">{errors.barang_cirikhusus}</p>}
+                            {errors.barang_cirikhusus && (
+                                <p className="text-red-600 text-sm">{errors.barang_cirikhusus}</p>
+                            )}
                         </div>
 
+                        {/* Submit Button */}
                         <div className="md:col-span-2 flex justify-end">
                             <button
                                 type="submit"
