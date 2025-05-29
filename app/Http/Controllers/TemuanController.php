@@ -32,7 +32,11 @@ class TemuanController extends Controller
 
     public function create()
     {
-        return Inertia::render('Temuan/Create');
+        return Inertia::render('temuan/TemuanCreate', [
+            'auth' => [
+                'user' => auth()->user(),
+            ],
+        ]);
     }
 
     public function store(Request $request)

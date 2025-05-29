@@ -106,7 +106,7 @@ export default function KehilanganCreate({ auth }) {
                                 <p className="text-red-600 text-sm mt-1">{errors.kota_hilang}</p>
                                 )}
                             </div>
-                            </div>
+                        </div>
 
 
                         {/* Tanggal Hilang */}
