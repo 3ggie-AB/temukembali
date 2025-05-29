@@ -41,6 +41,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                             <Link href={route('kehilangan.index')} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                 Daftar Kehilangan
                                             </Link>
+                                            <Link href={route('temuan.index')} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                Daftar Temuan
+                                            </Link>
                                             {/* <Link href={route('kehilangan.create')} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                                                 Create
                                             </Link> */}
