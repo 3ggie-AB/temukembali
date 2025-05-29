@@ -1,22 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Provinsi } from '@/Components/laravolt/Provinsi';
-import { Kota } from '@/Components/laravolt/Kota';
+
+const provinsiKotaData = {
+    'Jawa Barat': ['Bandung', 'Bogor', 'Bekasi'],
+    'DKI Jakarta': ['Jakarta Selatan', 'Jakarta Barat', 'Jakarta Pusat'],
+    'Jawa Tengah': ['Semarang', 'Solo', 'Magelang'],
+};
 
 export default function KehilanganCreate({ auth }) {
-    const [provinsiId, setProvinsiId] = React.useState("")
-    const [kotaId, setKotaId] = React.useState("")
-
-    const handlePilihProvinsi = (id) => {
-        setProvinsiId(id)
-        setKotaId("") // reset kota jika provinsi ganti
-    }
-
-    const handlePilihKota = (id) => {
-        setKotaId(id);
-        setData('kota_hilang', id); // TAMBAHKAN INI
-    };
     const { data, setData, post, processing, errors } = useForm({
         deskripsi: '',
         provinsi_hilang: '',
@@ -27,6 +19,16 @@ export default function KehilanganCreate({ auth }) {
         barang_merk: '',
         barang_cirikhusus: '',
     });
+
+    const [daftarProvinsi] = useState(Object.keys(provinsiKotaData));
+    const [daftarKota, setDaftarKota] = useState([]);
+
+    useEffect(() => {
+        if (data.provinsi_hilang) {
+            setDaftarKota(provinsiKotaData[data.provinsi_hilang]);
+            setData('kota_hilang', ''); // reset kota saat provinsi berubah
+        }
+    }, [data.provinsi_hilang]);
 
     const submit = (e) => {
         e.preventDefault();
@@ -44,116 +46,134 @@ export default function KehilanganCreate({ auth }) {
         >
             <Head title="Lapor Kehilangan" />
 
-            <div className="w-full max-w-2xl mx-auto p-6 mt-6 bg-white dark:bg-gray-800 rounded shadow">
-                <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
-                        <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Deskripsi
-                        </label>
-                        <textarea
-                            value={data.deskripsi}
-                            onChange={(e) => setData('deskripsi', e.target.value)}
-                            className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.deskripsi ? 'border-red-500' : 'border-gray-300'}`}
-                            rows={3}
-                        />
-                        {errors.deskripsi && <p className="text-red-600 text-sm">{errors.deskripsi}</p>}
-                    </div>
+            <div className="grid grid-cols-12 gap-4 px-4">
+                <div className="col-span-12 m-6 p-6 bg-white dark:bg-gray-800 rounded shadow">
+                    <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Deskripsi
+                            </label>
+                            <textarea
+                                value={data.deskripsi}
+                                onChange={(e) => setData('deskripsi', e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.deskripsi ? 'border-red-500' : 'border-gray-300'}`}
+                                rows={3}
+                            />
+                            {errors.deskripsi && <p className="text-red-600 text-sm">{errors.deskripsi}</p>}
+                        </div>
 
-                    <div>
-                        <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Tanggal Hilang
-                        </label>
-                        <input
-                            type="date"
-                            value={data.tanggal_hilang}
-                            onChange={(e) => setData('tanggal_hilang', e.target.value)}
-                            className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.tanggal_hilang ? 'border-red-500' : 'border-gray-300'}`}
-                        />
-                        {errors.tanggal_hilang && <p className="text-red-600 text-sm">{errors.tanggal_hilang}</p>}
-                    </div>
+                        <div>
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Provinsi
+                            </label>
+                            <select
+                                value={data.provinsi_hilang}
+                                onChange={(e) => setData('provinsi_hilang', e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.provinsi_hilang ? 'border-red-500' : 'border-gray-300'}`}
+                            >
+                                <option value="">Pilih Provinsi</option>
+                                {daftarProvinsi.map((prov, i) => (
+                                    <option key={i} value={prov}>{prov}</option>
+                                ))}
+                            </select>
+                            {errors.provinsi_hilang && <p className="text-red-600 text-sm">{errors.provinsi_hilang}</p>}
+                        </div>
 
-                    <div>
-                        <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Kategori Barang
-                        </label>
-                        <input
-                            type="text"
-                            value={data.barang_kategori}
-                            onChange={(e) => setData('barang_kategori', e.target.value)}
-                            className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_kategori ? 'border-red-500' : 'border-gray-300'}`}
-                        />
-                        {errors.barang_kategori && <p className="text-red-600 text-sm">{errors.barang_kategori}</p>}
-                    </div>
+                        <div>
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Kota 
+                            </label>
+                            <select
+                                value={data.kota_hilang}
+                                onChange={(e) => setData('kota_hilang', e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.kota_hilang ? 'border-red-500' : 'border-gray-300'}`}
+                                disabled={!data.provinsi_hilang}
+                            >
+                                <option value="">Pilih Kota</option>
+                                {daftarKota.map((kota, i) => (
+                                    <option key={i} value={kota}>{kota}</option>
+                                ))}
+                            </select>
+                            {errors.kota_hilang && <p className="text-red-600 text-sm">{errors.kota_hilang}</p>}
+                        </div>
 
-                    <div>
-                        <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Warna Barang
-                        </label>
-                        <input
-                            type="text"
-                            value={data.barang_warna}
-                            onChange={(e) => setData('barang_warna', e.target.value)}
-                            className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_warna ? 'border-red-500' : 'border-gray-300'}`}
-                        />
-                        {errors.barang_warna && <p className="text-red-600 text-sm">{errors.barang_warna}</p>}
-                    </div>
+                        {/* Tanggal dan lainnya tetap */}
+                        <div>
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Tanggal Hilang
+                            </label>
+                            <input
+                                type="date"
+                                value={data.tanggal_hilang}
+                                onChange={(e) => setData('tanggal_hilang', e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.tanggal_hilang ? 'border-red-500' : 'border-gray-300'}`}
+                            />
+                            {errors.tanggal_hilang && <p className="text-red-600 text-sm">{errors.tanggal_hilang}</p>}
+                        </div>
 
-                    <div>
-                        <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Merk Barang
-                        </label>
-                        <input
-                            type="text"
-                            value={data.barang_merk}
-                            onChange={(e) => setData('barang_merk', e.target.value)}
-                            className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_merk ? 'border-red-500' : 'border-gray-300'}`}
-                        />
-                        {errors.barang_merk && <p className="text-red-600 text-sm">{errors.barang_merk}</p>}
-                    </div>
+                        <div>
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Kategori Barang
+                            </label>
+                            <input
+                                type="text"
+                                value={data.barang_kategori}
+                                onChange={(e) => setData('barang_kategori', e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_kategori ? 'border-red-500' : 'border-gray-300'}`}
+                            />
+                            {errors.barang_kategori && <p className="text-red-600 text-sm">{errors.barang_kategori}</p>}
+                        </div>
 
-                    <div>
-                        <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Ciri Khas
-                        </label>
-                        <textarea
-                            value={data.barang_cirikhusus}
-                            onChange={(e) => setData('barang_cirikhusus', e.target.value)}
-                            className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_cirikhusus ? 'border-red-500' : 'border-gray-300'}`}
-                            rows={3}
-                        />
-                        {errors.barang_cirikhusus && <p className="text-red-600 text-sm">{errors.barang_cirikhusus}</p>}
-                    </div>
+                        <div>
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Warna Barang
+                            </label>
+                            <input
+                                type="text"
+                                value={data.barang_warna}
+                                onChange={(e) => setData('barang_warna', e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_warna ? 'border-red-500' : 'border-gray-300'}`}
+                            />
+                            {errors.barang_warna && <p className="text-red-600 text-sm">{errors.barang_warna}</p>}
+                        </div>
 
-                    <div>
-                        <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Pilih Provinsi Hilang
-                        </label>
-                        <Provinsi 
-                            className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.provinsi_id ? 'border-red-500' : 'border-gray-300'}`}
-                            onChange={(id) => {
-                                setData('provinsi_hilang', id);
-                                setProvinsiId(id);
-                                setKotaId("");
-                            }}
-                        />
-                        <Kota 
-                            className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.kota_id ? 'border-red-500' : 'border-gray-300'}`} 
-                            onChange={handlePilihKota} 
-                            ProvinsiKode={provinsiId}
-                        />
-                    </div>
+                        <div>
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Merk Barang
+                            </label>
+                            <input
+                                type="text"
+                                value={data.barang_merk}
+                                onChange={(e) => setData('barang_merk', e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_merk ? 'border-red-500' : 'border-gray-300'}`}
+                            />
+                            {errors.barang_merk && <p className="text-red-600 text-sm">{errors.barang_merk}</p>}
+                        </div>
 
+                        <div>
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Ciri Khas
+                            </label>
+                            <textarea
+                                value={data.barang_cirikhusus}
+                                onChange={(e) => setData('barang_cirikhusus', e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_cirikhusus ? 'border-red-500' : 'border-gray-300'}`}
+                                rows={3}
+                            />
+                            {errors.barang_cirikhusus && <p className="text-red-600 text-sm">{errors.barang_cirikhusus}</p>}
+                        </div>
 
-                    <div className="md:col-span-2 flex justify-end">
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200 disabled:opacity-50"
-                        >
-                            Simpan
-                        </button>
-                    </div>
-                </form>
+                        <div className="md:col-span-2 flex justify-end">
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200 disabled:opacity-50"
+                            >
+                                Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </AuthenticatedLayout>
     );
