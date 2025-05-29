@@ -77,7 +77,7 @@ export default function KehilanganList({ auth }) {
                                     <p className="capitalize"><span className="font-semibold">Provinsi:</span> {kehilangan.provinsi.name.toLowerCase()}</p>
                                     <p className="capitalize"><span className="font-semibold">Kota:</span> {kehilangan.kota.name.toLowerCase()}</p>
                                     <p><span className="font-semibold">Dilihat:</span> {kehilangan.jumlah_dilihat} kali</p>
-                                    <p><span className="font-semibold">Hubungi WA:</span> <a href="https://wa.me/6285875477953" target="_blank" className="text-blue-500 hover:underline" rel="noreferrer">6285875477953</a></p>
+                                    <p><span className="font-semibold">Hubungi WA:</span> <a href={`https://wa.me/` + kehilangan.user_whatsapp} target="_blank" className="text-blue-500 hover:underline" rel="noreferrer">{kehilangan.user_whatsapp}</a></p>
                                 </div>
                             </div>
                         </div>
