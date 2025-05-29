@@ -10,9 +10,18 @@ class KomentarHilangController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        //
+        return KomentarHilang::where('id_hilang', $id)
+            ->with(['user'])
+            ->orderBy('created_at', 'desc')
+            ->get([
+                'id',
+                'id_hilang',
+                'user_whatsapp',
+                'komentar',
+                'created_at',
+            ]);
     }
 
     /**
@@ -26,17 +35,30 @@ class KomentarHilangController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+        KomentarHilang::create([
+            'id_hilang' => $id,
+            'user_whatsapp' => auth()->user()->whatsapp,
+            'komentar' => $request->komentar,
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(KomentarHilang $komentarHilang)
+    public function new($id)
     {
-        //
+        return KomentarHilang::where('id_hilang', $id)
+            ->with(['user'])
+            ->orderBy('created_at', 'desc')
+            ->first([
+                'id',
+                'id_hilang',
+                'user_whatsapp',
+                'komentar',
+                'created_at',
+            ]);
     }
 
     /**

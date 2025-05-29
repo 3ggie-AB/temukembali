@@ -1,10 +1,34 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Head, Link, usePage } from "@inertiajs/react";
+import React, { useState, useEffect } from "react";
+import { Head, usePage } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import ModalKomentar from "./ModalKomentar";
 
 export default function KehilanganList({ auth }) {
     const { kehilangan } = usePage().props;
+
+    // State untuk simpan data komentar yang diambil dari API
+    const [komentarList, setKomentarList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        // Fungsi fetch komentar
+        const fetchKomentar = async () => {
+            try {
+                const response = await fetch(`/komentar-hilang-new/${kehilangan.id}`);
+                if (!response.ok) throw new Error("Failed to fetch komentar");
+                const data = await response.json();
+                // console.log("Komentar data:", data); // Debugging log
+                setKomentarList(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchKomentar();
+    }, [kehilangan.id]);
 
     return (
         <AuthenticatedLayout
@@ -35,20 +59,65 @@ export default function KehilanganList({ auth }) {
                                     <p><span className="font-semibold">Provinsi:</span> 15</p>
                                     <p><span className="font-semibold">Kota:</span> 1506</p>
                                     <p><span className="font-semibold">Dilihat:</span> 0 kali</p>
-                                    <p><span className="font-semibold">Hubungi WA:</span> <a href="https://wa.me/6285875477953" target="_blank" className="text-blue-500 hover:underline">6285875477953</a></p>
+                                    <p><span className="font-semibold">Hubungi WA:</span> <a href="https://wa.me/6285875477953" target="_blank" className="text-blue-500 hover:underline" rel="noreferrer">6285875477953</a></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div className="bg-white mx-auto sm:px-6 lg:px-8 p-6 mt-4 shadow-sm sm:rounded-lg">
                     <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Komentar :</h3>
+
+                    {loading && <p>Loading komentar...</p>}
+                    {error && <p className="text-red-500">Error: {error}</p>}
+
                     <div className="space-y-4">
-                        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
-                            <p className="text-sm text-gray-800 dark:text-white">Saya melihat barang seperti ini di dekat stasiun kemarin.</p>
-                            <span className="text-xs text-gray-500">29 Mei 2025</span>
-                        </div>
-                        <ModalKomentar/>
+                        {!loading && !komentarList && (
+                            <p className="text-gray-500">Tidak ada komentar.</p>
+                        )}
+
+                        {komentarList && (
+                            <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3">
+                                    <img
+                                        src={komentarList.user?.photo || "/default/profile.png"}
+                                        alt={komentarList.user?.name}
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                    <div>
+                                        <p className="text-xs font-medium text-gray-400 dark:text-white">
+                                            {'@' + (komentarList.user?.name || "Pengguna")} - {
+                                                komentarList.created_at ? (() => {
+                                                    const created = new Date(komentarList.created_at);
+                                                    const now = new Date();
+                                                    const diffMs = now - created;
+                                                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                                                    const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
+
+                                                    if (diffHours > 0) {
+                                                        return `${diffHours} jam yang lalu`;
+                                                    } else if (diffMinutes > 0) {
+                                                        return `${diffMinutes} menit yang lalu`;
+                                                    } else {
+                                                        return 'Baru saja';
+                                                    }
+                                                })() : 'Waktu tidak tersedia'}
+                                        </p>
+
+                                        <p className="text-sm text-gray-800 dark:text-white">{komentarList.komentar}</p>
+
+                                        <span className="text-xs text-gray-500">
+                                            {komentarList.created_at ? new Date(komentarList.created_at).toLocaleDateString('id-ID', {
+                                                day: 'numeric',
+                                                month: 'long',
+                                                year: 'numeric'
+                                            }) : 'Tanggal tidak tersedia'}
+                                        </span>
+                                    </div>
+                                </div>
+                        )}
+
+                        <ModalKomentar id={kehilangan.id} />
                     </div>
                 </div>
             </div>

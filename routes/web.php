@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/temuan/saya/{id}/edit', [TemuanController::class, 'edit'])->name('temuan.edit');
     Route::put('/temuan/{id}', [TemuanController::class, 'update'])->name('temuan.update');
     Route::delete('/temuan/{id}', [TemuanController::class, 'destroy'])->name('temuan.destroy');
+    require __DIR__.'/group/komentarHilang.php';
 });
 
 require __DIR__.'/auth.php';
