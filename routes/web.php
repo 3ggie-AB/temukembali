@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/user/{whatsapp}', [ProfileController::class, 'detail'])->name('profile.detail');
+
     Route::get('/kehilangan', [KehilanganController::class, 'index'])->name('kehilangan.index');
     Route::get('/kehilangan/create', [KehilanganController::class, 'create'])->name('kehilangan.create');
     Route::post('/kehilangan', [KehilanganController::class, 'store'])->name('kehilangan.store');
@@ -38,7 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/temuan/saya/{id}/edit', [TemuanController::class, 'edit'])->name('temuan.edit');
     Route::put('/temuan/{id}', [TemuanController::class, 'update'])->name('temuan.update');
     Route::delete('/temuan/{id}', [TemuanController::class, 'destroy'])->name('temuan.destroy');
-    require __DIR__.'/group/komentarHilang.php';
 });
 
+require __DIR__.'/group/komentarHilang.php';
+require __DIR__.'/group/Predict.php';
 require __DIR__.'/auth.php';
