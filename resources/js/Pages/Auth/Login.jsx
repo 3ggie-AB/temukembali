@@ -36,23 +36,30 @@ export default function Login({ status, canResetPassword }) {
                         Masuk Akunmu
                     </h2>
 
-                    <InputLabel htmlFor="email" value="Email" className='mt-6'  />
+                    <div className="mt-4">
+                        <InputLabel htmlFor="whatsapp" value="Nomor Whatsapp" />
 
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-4 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
-                    />
+                        <div className="mt-4 flex rounded-md shadow-sm">
+                            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                +62
+                            </span>
+                            <input
+                                type="tel"
+                                name="whatsapp"
+                                id="whatsapp"
+                                className="flex-1 block w-full rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                placeholder="8123456789"
+                                value={data.whatsapp}
+                                onChange={(e) => setData('whatsapp', e.target.value)}
+                                required
+                            />
+                        </div>
 
-                    <InputError message={errors.email} className="mt-2" />
+                        <InputError message={errors.whatsapp} className="mt-2" />
+                    </div>
                 </div>
 
-                <div className="mt-6">
+                <div className="mt-4">
                     <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput

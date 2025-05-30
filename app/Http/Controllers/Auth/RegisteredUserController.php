@@ -59,8 +59,8 @@ class RegisteredUserController extends Controller
 
         FontteController::kirimPesan(
             "Halo {$user->name},\n\n" .
-            "Terima kasih telah mendaftar di aplikasi kami. Silakan verifikasi nomor WhatsApp Anda dengan mengklik tautan berikut:\n" .
-            route('wa-verifikasi', ['token' => $randToken, 'whatsapp' => $user->whatsapp], absolute: false) . "\n\n" .
+            "Terima kasih telah mendaftar di aplikasi Temu Kembali. Silakan verifikasi nomor WhatsApp Anda dengan mengklik tautan berikut:\n\n" .
+            route('wa-verifikasi', ['token' => $randToken]) . "\n\n" .
             "Jika Anda tidak mendaftar, abaikan pesan ini.",
             $user->whatsapp
         );

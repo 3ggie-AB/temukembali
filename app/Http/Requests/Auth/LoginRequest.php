@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class LoginRequest extends FormRequest
 {
@@ -26,8 +27,16 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
+        $this->merge([
+            'whatsapp' => '+62' . ltrim(str_replace(' ', '', $this->whatsapp), '0'),
+        ]);
         return [
-            'email' => ['required', 'string', 'email'],
+            'whatsapp' => [
+                'required',
+                'string',
+                'regex:/^\+628[1-9][0-9]{7,11}$/',
+                'max:255'
+            ],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,11 +50,11 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('whatsapp', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'whatsapp' => trans('auth.failed'),
             ]);
         }
 
@@ -68,7 +77,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'whatsapp' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -80,6 +89,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(($this->string('whatsapp')).'|'.$this->ip());
     }
 }
