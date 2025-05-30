@@ -65,7 +65,7 @@ class KehilanganController extends Controller
             'jumlah_dilihat' => 0,
         ]);
 
-        return redirect()->route('kehilangan.index')->with('success', 'Laporan kehilangan berhasil dibuat!');
+        return redirect()->route('kehilangan.index')->with('success', 'Terima Kasih Kamu Berhasil Melaporkan!');
     }
     public function show($id)
     {
@@ -77,4 +77,45 @@ class KehilanganController extends Controller
             'kehilangan' => $kehilangan,
         ]);
     }
+
+    public function edit($id)
+    {
+        $kehilangan = LaporHilang::with(['provinsi', 'kota'])->findOrFail($id);
+        // dd($kehilangan);
+
+        return Inertia::render('kehilangan/KehilanganEdit', [
+            'kehilangan' => [
+                'id' => $kehilangan->id,
+                'deskripsi' => $kehilangan->deskripsi,
+                'provinsi_hilang' => $kehilangan->provinsi_hilang,
+                'provinsi_nama' => $kehilangan->provinsi?->nama, // dari relasi
+                'kota_hilang' => $kehilangan->kota_hilang,
+                'kota_nama' => $kehilangan->kota?->nama, // dari relasi
+                'tanggal_hilang' => \Carbon\Carbon::parse($kehilangan->tanggal_hilang)->format('Y-m-d'),
+                'barang_kategori' => $kehilangan->barang_kategori,
+                'barang_warna' => $kehilangan->barang_warna,
+                'barang_merk' => $kehilangan->barang_merk,
+                'barang_cirikhusus' => $kehilangan->barang_cirikhusus,
+            ]
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'deskripsi' => 'required|string',
+            'provinsi_hilang' => 'required|string',
+            'kota_hilang' => 'required|string',
+            'tanggal_hilang' => 'required|date',
+            'barang_kategori' => 'required|string',
+            'barang_warna' => 'required|string',
+            'barang_merk' => 'required|string',
+            'barang_cirikhusus' => 'required|string',
+        ]);
+
+        LaporHilang::where('id', $id)->update($validated);
+
+        return redirect()->route('kehilangan.index')->with('success', 'Laporan berhasil diperbarui.');
+    }
+
 }

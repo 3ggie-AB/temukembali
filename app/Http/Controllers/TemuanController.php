@@ -71,7 +71,7 @@ class TemuanController extends Controller
     {
         $temuan = Temuan::findOrFail($id);
 
-        return Inertia::render('Temuan/Edit', [
+        return Inertia::render('Temuan/TemuanEdit', [
             'temuan' => $temuan,
         ]);
     }
