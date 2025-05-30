@@ -2,46 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\LaporHilang;
+use App\Models\LaporTemuan;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class PredictController extends Controller
 {
+    private function hitungKemiripan($hilang, $temuan, $weights)
+    {
+        similar_text($hilang->deskripsi, $temuan->deskripsi, $p1);
+        similar_text($hilang->barang_kategori, $temuan->barang_kategori, $p2);
+        similar_text($hilang->barang_warna, $temuan->barang_warna, $p3);
+        similar_text($hilang->barang_merk, $temuan->barang_merk, $p4);
+        similar_text($hilang->barang_cirikhusus, $temuan->barang_cirikhusus, $p5);
+
+        return round(($p1 * $weights['deskripsi']) +
+                     ($p2 * $weights['barang_kategori']) +
+                     ($p3 * $weights['barang_warna']) +
+                     ($p4 * $weights['barang_merk']) +
+                     ($p5 * $weights['barang_cirikhusus']), 2);
+    }
+
     public function manualHilang($id)
     {
-        $hilang = \App\Models\LaporHilang::findOrFail($id);
-        $laporTemuan = \App\Models\LaporTemuan::
-            where('status', 'hilang')->get();
-        if($laporTemuan->isEmpty()) {
+        $hilang = LaporHilang::findOrFail($id);
+        $laporTemuan = LaporTemuan::
+        // where('status', 'hilang')->
+        get();
+
+        if ($laporTemuan->isEmpty()) {
             return [
                 'message' => 'Tidak ada data temuan yang tersedia untuk perbandingan.',
                 'success' => false,
                 'data' => [],
             ];
         }
+
+        // Definisikan bobot (bisa disesuaikan sesuai prioritas)
+        $weights = [
+            'deskripsi' => 0.25,
+            'barang_kategori' => 0.15,
+            'barang_warna' => 0.2,
+            'barang_merk' => 0.2,
+            'barang_cirikhusus' => 0.2,
+        ];
+
         $hasilKemiripan = [];
 
         foreach ($laporTemuan as $temuan) {
-            $totalPersen = 0;
-            $jumlahKolom = 5;
-            similar_text($hilang->deskripsi, $temuan->deskripsi, $p1);
-            similar_text($hilang->barang_kategori, $temuan->barang_kategori, $p2);
-            similar_text($hilang->barang_warna, $temuan->barang_warna, $p3);
-            similar_text($hilang->barang_merk, $temuan->barang_merk, $p4);
-            similar_text($hilang->barang_cirikhusus, $temuan->barang_cirikhusus, $p5);
+            $kemiripan = $this->hitungKemiripan($hilang, $temuan, $weights);
 
-            // Hitung rata-rata
-            $totalPersen = ($p1 + $p2 + $p3 + $p4 + $p5) / $jumlahKolom;
-            if (round($totalPersen, 2) >= 50) {
+            if ($kemiripan >= 50) {
                 $hasilKemiripan[] = [
                     'temuan_id' => $temuan->id,
-                    'persentase_kemiripan' => round($totalPersen, 2),
+                    'persentase_kemiripan' => $kemiripan,
                     'data_temuan' => $temuan,
                 ];
             }
         }
+
         if (empty($hasilKemiripan)) {
             return [
                 'message' => 'Tidak ada data temuan yang mirip dengan laporan hilang ini.',
@@ -53,12 +72,66 @@ class PredictController extends Controller
         // Urutkan dari yang paling mirip
         usort($hasilKemiripan, fn($a, $b) => $b['persentase_kemiripan'] <=> $a['persentase_kemiripan']);
 
-        // Ambil hasil teratas
-        $top3 = array_slice($hasilKemiripan, 0, 3);
         return [
             'message' => 'Berhasil mendapatkan data temuan yang mirip.',
             'success' => true,
-            'data' => $top3,
+            'data' => $hasilKemiripan,
+        ];
+    }
+
+    public function manualTemuan($id)
+    {
+        $temuan = LaporTemuan::findOrFail($id);
+        $laporHilang = LaporHilang::
+        // where('status', 'temuan')->
+        get();
+
+        if ($laporHilang->isEmpty()) {
+            return [
+                'message' => 'Tidak ada data temuan yang tersedia untuk perbandingan.',
+                'success' => false,
+                'data' => [],
+            ];
+        }
+
+        // Definisikan bobot (bisa disesuaikan sesuai prioritas)
+        $weights = [
+            'deskripsi' => 0.25,
+            'barang_kategori' => 0.15,
+            'barang_warna' => 0.2,
+            'barang_merk' => 0.2,
+            'barang_cirikhusus' => 0.2,
+        ];
+
+        $hasilKemiripan = [];
+
+        foreach ($laporHilang as $hilang) {
+            $kemiripan = $this->hitungKemiripan($temuan, $hilang, $weights);
+
+            if ($kemiripan >= 50) {
+                $hasilKemiripan[] = [
+                    'temuan_id' => $temuan->id,
+                    'persentase_kemiripan' => $kemiripan,
+                    'data_temuan' => $temuan,
+                ];
+            }
+        }
+
+        if (empty($hasilKemiripan)) {
+            return [
+                'message' => 'Tidak ada data temuan yang mirip dengan laporan temuan ini.',
+                'success' => false,
+                'data' => [],
+            ];
+        }
+
+        // Urutkan dari yang paling mirip
+        usort($hasilKemiripan, fn($a, $b) => $b['persentase_kemiripan'] <=> $a['persentase_kemiripan']);
+
+        return [
+            'message' => 'Berhasil mendapatkan data temuan yang mirip.',
+            'success' => true,
+            'data' => $hasilKemiripan,
         ];
     }
 }
