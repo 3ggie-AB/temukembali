@@ -6,7 +6,7 @@ function ActionDropdown({ itemId }) {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef(null);
 
-    // Tutup dropdown kalau klik di luar
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (
@@ -45,29 +45,28 @@ function ActionDropdown({ itemId }) {
 
             {open && (
                 <div
-                    className="origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-20"
+                    className="origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
                     role="menu"
                     aria-orientation="vertical"
                     tabIndex="-1"
+                    style={{ minWidth: "8rem" }}
                 >
                     <div className="py-1" role="none">
                         <Link
                             href={`/kehilangan/detail/${itemId}`}
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700"
                             role="menuitem"
                             tabIndex="-1"
-                            onClick={() => setOpen(false)}
-                        >
-                            Detail
+                            onClick={() => setOpen(false)}>
+                            Detail Kehilangan
                         </Link>
                         <Link
-                            href={`/kehilangan/saya/${itemId}/edit`}
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            href={`/kehilangan/${itemId}/edit`}
+                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-700"
                             role="menuitem"
                             tabIndex="-1"
-                            onClick={() => setOpen(false)}
-                        >
-                            Edit
+                            onClick={() => setOpen(false)}>
+                            Perbarui
                         </Link>
                     </div>
                 </div>
@@ -77,7 +76,25 @@ function ActionDropdown({ itemId }) {
 }
 
 export default function KehilanganList({ auth }) {
-    const { kehilangan } = usePage().props;
+    const { kehilangan, flash = {} } = usePage().props; // <-- tambahkan flash di sini
+    const [search, setSearch] = useState("");
+    const [showAlert, setShowAlert] = useState(!!flash.success);
+
+    useEffect(() => {
+        if (flash.success) setShowAlert(true);
+    }, [flash.success]);
+
+    const filtered = kehilangan.filter((item) => {
+        const q = search.toLowerCase();
+        return (
+            item.deskripsi?.toLowerCase().includes(q) ||
+            (item.tanggal_hilang && new Date(item.tanggal_hilang).toLocaleDateString().includes(q)) ||
+            item.barang_kategori?.toLowerCase().includes(q) ||
+            item.barang_warna?.toLowerCase().includes(q) ||
+            item.barang_merk?.toLowerCase().includes(q) ||
+            item.status?.toLowerCase().includes(q)
+        );
+    });
 
     return (
         <AuthenticatedLayout
@@ -89,79 +106,104 @@ export default function KehilanganList({ auth }) {
             }
         >
             <Head title="List Kehilangan" />
-            <div className="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <div className="mb-3 text-end mt-21">
+            <div className="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 rounded-lg">
+                    {showAlert && flash.success && (
+                        <div className="text-center py-4 lg:px-4 mb-4">
+                            <div
+                                className="py-2 lg:px-4 bg-blue-800 items-center text-green-100 leading-none lg:rounded-full flex lg:inline-flex justify-between"
+                                role="alert"
+                            >
+                                <span className="flex rounded-full bg-green-500 uppercase px-2 py-1 text-xs font-bold mr-3">
+                                    Success
+                                </span>
+                                <span className="font-semibold mr-2 text-left flex-auto">{flash.success}</span>
+                                <button
+                                    className="ml-4 text-green-200 hover:text-green-100 focus:outline-none"
+                                    onClick={() => setShowAlert(false)}
+                                    aria-label="Close alert"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                <div className="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                    <div className="mb-3 flex flex-col md:flex-row md:justify-between gap-2">
                         <Link
                             href={route("kehilangan.create")}
                             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                         >
                             Lapor Kehilangan
                         </Link>
+                        <input
+                            type="text"
+                            className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 w-full md:w-64"
+                            placeholder="Cari deskripsi, status, dll..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                     </div>
 
-                    {kehilangan.length === 0 ? (
+                    {filtered.length === 0 ? (
                         <p className="text-gray-600 dark:text-gray-300">
                             Belum ada laporan kehilangan.
                         </p>
                     ) : (
-                        <table className="min-w-full table-auto border-collapse mt-6 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                            <thead>
-                                <tr className="bg-gray-50 dark:bg-gray-700">
-                                    <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center">
-                                        Deskripsi
-                                    </th>
-                                    <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center">
-                                        Tanggal Hilang
-                                    </th>
-                                    <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center">
-                                        Kategori
-                                    </th>
-                                    <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center">
-                                        Warna
-                                    </th>
-                                    <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center">
-                                        Merk
-                                    </th>
-                                    <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center">
-                                        Status
-                                    </th>
-                                    <th className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center">
-                                        Aksi
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                              
-                                {kehilangan.map((item) => (
-                                    <tr key={item.id} className="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-center">
-                                        <td className="border border-gray-200 dark:border-gray-700 px-4 py-2">
-                                            {item.deskripsi}
-                                        </td>
-                                        <td className="border border-gray-200 dark:border-gray-700 px-4 py-2">
-                                            {new Date(
-                                                item.tanggal_hilang
-                                            ).toLocaleDateString()}
-                                        </td>
-                                        <td className="border border-gray-200 dark:border-gray-700 px-4 py-2">
-                                            {item.barang_kategori}
-                                        </td>
-                                        <td className="border border-gray-200 dark:border-gray-700 px-4 py-2">
-                                            {item.barang_warna}
-                                        </td>
-                                        <td className="border border-gray-200 dark:border-gray-700 px-4 py-2">
-                                            {item.barang_merk}
-                                        </td>
-                                        <td className="border border-gray-200 dark:border-gray-700 px-4 py-2">
-                                            {item.status}
-                                        </td>
-                                        <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-center">
-                                            <ActionDropdown itemId={item.id} />
-                                        </td>
+                        <div className="overflow-x-auto relative">
+                            <table className="min-w-full table-auto mt-5">
+                                <thead>
+                                    <tr>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-tl-xl">
+                                            Deskripsi
+                                        </th>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
+                                            Tanggal Hilang
+                                        </th>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
+                                            Kategori
+                                        </th>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
+                                            Warna
+                                        </th>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
+                                            Merk
+                                        </th>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
+                                            Status
+                                        </th>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-tr-xl">
+                                            Aksi
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {filtered.map((item, idx) => (
+                                        <tr
+                                            key={item.id}
+                                            className="bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow hover:bg-gray-50 dark:hover:bg-gray-700 text-center rounded-xl"
+                                            style={{
+                                                borderRadius: "0.75rem",
+                                                boxShadow: "0 1px 4px 0 rgb(0 0 0 / 0.04)",
+                                                marginBottom: "8px",
+                                                overflow: "hidden",
+                                            }}
+                                        >
+                                            <td className="px-4 py-3 first:rounded-bl-xl last:rounded-br-xl">
+                                                {item.deskripsi}
+                                            </td>
+                                            <td className="px-4 py-3">{new Date(item.tanggal_hilang).toLocaleDateString()}</td>
+                                            <td className="px-4 py-3">{item.barang_kategori}</td>
+                                            <td className="px-4 py-3">{item.barang_warna}</td>
+                                            <td className="px-4 py-3">{item.barang_merk}</td>
+                                            <td className="px-4 py-3">{item.status}</td>
+                                            <td className="px-4 py-3 text-center relative">
+                                                <ActionDropdown itemId={item.id} />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
                 </div>
             </div>
