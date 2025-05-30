@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FontteController;
 use App\Models\User;
 use Illuminate\Validation\Rule;
 use Illuminate\Auth\Events\Registered;
@@ -44,16 +45,28 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $randToken = bin2hex(random_bytes(16));
+
         $user = User::create([
             'name' => $request->name,
             'whatsapp' => $request->whatsapp,
             'password' => Hash::make($request->password),
+            'token_wa_expired_at' => now()->addMinutes(5),
+            'verif_token_wa' => $randToken,
         ]);
 
         event(new Registered($user));
 
+        FontteController::kirimPesan(
+            "Halo {$user->name},\n\n" .
+            "Terima kasih telah mendaftar di aplikasi kami. Silakan verifikasi nomor WhatsApp Anda dengan mengklik tautan berikut:\n" .
+            route('wa-verifikasi', ['token' => $randToken, 'whatsapp' => $user->whatsapp], absolute: false) . "\n\n" .
+            "Jika Anda tidak mendaftar, abaikan pesan ini.",
+            $user->whatsapp
+        );
+
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('wa-verifikasi', absolute: false));
     }
 }

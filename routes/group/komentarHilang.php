@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 // use Inertia\Inertia;
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'wa.verified'])->group(function () {
     Route::get('/komentar-hilang/{id}', [KomentarHilangController::class, 'index'])
         ->name('komentar-hilang.index');
 

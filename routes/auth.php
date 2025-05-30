@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\VerifyWAController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -35,7 +36,13 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'wa.not_verified'])->group(function () {
+    Route::get('wa-verif', [VerifyWAController::class, 'index'])->name('wa-verifikasi');
+
+    Route::post('verif-by-wa', [VerifyWAController::class, 'waVerif'])->name('verifikasi.token.wa');
+});
+
+Route::middleware(['auth', 'wa.verified'])->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
