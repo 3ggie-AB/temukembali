@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\LaporTemuan;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -59,5 +60,17 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function detail($whatsapp)
+    {
+        $user = \App\Models\User::with('laporTemuan', 'laporHilang')->where('whatsapp', $whatsapp)->firstOrFail();
+        $temuan = LaporTemuan::where('user_whatsapp', $whatsapp)->count();
+        $kehilangan = \App\Models\LaporHilang::where('user_whatsapp', $whatsapp)->count();
+        return Inertia::render('Profile/Detail', [
+            'user' => $user,
+            'temuan' => $temuan,
+            'kehilangan' => $kehilangan,
+        ]);
     }
 }
