@@ -27,6 +27,7 @@ class PredictController extends Controller
     {
         $hilang = LaporHilang::findOrFail($id);
         $laporTemuan = LaporTemuan::
+        where('user_whatsapp', '!=', $hilang->user_whatsapp)->
         // where('status', 'hilang')->
         get();
 
@@ -83,6 +84,7 @@ class PredictController extends Controller
     {
         $temuan = LaporTemuan::findOrFail($id);
         $laporHilang = LaporHilang::
+        where('user_whatsapp', '!=', $temuan->user_whatsapp)->
         // where('status', 'temuan')->
         get();
 
