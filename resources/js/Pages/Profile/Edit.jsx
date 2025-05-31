@@ -8,30 +8,39 @@ export default function Edit({ mustVerifyEmail, status }) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Profile
+                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+                    Profil
                 </h2>
             }
         >
-            <Head title="Profile" />
+            <Head title="Profil" />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
+            <div className="py-0">
+                <div className="mx-auto max-w-7xl space-y-10">
+                    <section className="bg-white shadow-sm sm:rounded-none dark:bg-gray-800 p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b pb-2">
+                            Informasi Pribadi
+                        </h3>
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
                             className="max-w-xl"
                         />
-                    </div>
+                    </section>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
+                    <section className="bg-white shadow-sm sm:rounded-none dark:bg-gray-800 p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b pb-2">
+                            Ubah Password
+                        </h3>
                         <UpdatePasswordForm className="max-w-xl" />
-                    </div>
+                    </section>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
+                    <section className="bg-white shadow-sm sm:rounded-none dark:bg-gray-800 p-6">
+                        <h3 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-4 border-b pb-2">
+                            Hapus Akun
+                        </h3>
                         <DeleteUserForm className="max-w-xl" />
-                    </div>
+                    </section>
                 </div>
             </div>
         </AuthenticatedLayout>
