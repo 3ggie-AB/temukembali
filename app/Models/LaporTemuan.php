@@ -25,12 +25,12 @@ class LaporTemuan extends Model
     }
     public function provinsi()
     {
-        return $this->belongsTo(Provinsi::class, 'provinsi_hilang', 'code');
+        return $this->belongsTo(Provinsi::class, 'provinsi_temuan', 'code');
     }
 
     public function kota()
     {
-        return $this->belongsTo(Kota::class, 'kota_hilang', 'code');
+        return $this->belongsTo(Kota::class, 'kota_temuan', 'code');
     }
 
     // public $timestamps = false;

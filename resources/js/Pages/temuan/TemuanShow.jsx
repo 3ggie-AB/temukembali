@@ -4,8 +4,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import ModalKomentar from "../../Components/Custom/ModalKomentar";
 import PredictCard from "../../Components/Custom/PredictCard";
 
-export default function KehilanganList({ auth }) {
-    const { kehilangan } = usePage().props;
+export default function TemuanList({ auth }) {
+    const { temuan } = usePage().props;
 
     // State untuk simpan data komentar yang diambil dari API
     const [komentarList, setKomentarList] = useState([]);
@@ -17,7 +17,7 @@ export default function KehilanganList({ auth }) {
 
         const fetchKomentar = async () => {
             try {
-                const response = await fetch(`/komentar-hilang-new/${kehilangan.id}`);
+                const response = await fetch(`/komentar-temuan-new/${temuan.id}`);
                 if (!response.ok) throw new Error("Failed to fetch komentar");
                 const data = await response.json();
                 setKomentarList(data); // asumsi data adalah array, atau bungkus dalam array jika 1 objek
@@ -36,36 +36,36 @@ export default function KehilanganList({ auth }) {
 
         // Bersihkan interval saat komponen unmount
         return () => clearInterval(intervalId);
-    }, [kehilangan.id]);
+    }, [temuan.id]);
 
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Detail Kehilangan
+                    Detail Temuan
                 </h2>
             }
         >
-            <Head title="List Kehilangan" />
+            <Head title="List Temuan" />
             <div className="py-6 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <div className="mb-3 mt-21">
                         <div className="mb-3">
-                            <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">Detail Kehilangan</h2>
+                            <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">Detail Temuan</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
                                 <div>
-                                    <p><span className="font-semibold">Kategori:</span> {kehilangan.barang_kategori}</p>
-                                    <p><span className="font-semibold">Merk:</span> {kehilangan.barang_merk}</p>
-                                    <p><span className="font-semibold">Warna:</span> {kehilangan.barang_warna}</p>
-                                    <p><span className="font-semibold">Ciri Khusus:</span> {kehilangan.barang_cirikhusus}</p>
-                                    <p><span className="font-semibold">Deskripsi:</span> {kehilangan.deskripsi}</p>
+                                    <p><span className="font-semibold">Kategori:</span> {temuan.barang_kategori}</p>
+                                    <p><span className="font-semibold">Merk:</span> {temuan.barang_merk}</p>
+                                    <p><span className="font-semibold">Warna:</span> {temuan.barang_warna}</p>
+                                    <p><span className="font-semibold">Ciri Khusus:</span> {temuan.barang_cirikhusus}</p>
+                                    <p><span className="font-semibold">Deskripsi:</span> {temuan.deskripsi}</p>
                                 </div>
                                 <div>
-                                    <p><span className="font-semibold">Status:</span> {kehilangan.status}</p>
+                                    <p><span className="font-semibold">Status:</span> {temuan.status}</p>
                                     <p>
-                                        <span className="font-semibold">Tanggal Hilang:</span>{" "}
-                                        {new Date(kehilangan.tanggal_hilang).toLocaleString("id-ID", {
+                                        <span className="font-semibold">Tanggal Temuan:</span>{" "}
+                                        {new Date(temuan.tanggal_temuan).toLocaleString("id-ID", {
                                             day: "numeric",
                                             month: "long",
                                             year: "numeric",
@@ -75,10 +75,10 @@ export default function KehilanganList({ auth }) {
                                             timeZone: "Asia/Jakarta"
                                         })} WIB
                                     </p>
-                                    <p className="capitalize"><span className="font-semibold">Provinsi:</span> {kehilangan.provinsi.name.toLowerCase()}</p>
-                                    <p className="capitalize"><span className="font-semibold">Kota:</span> {kehilangan.kota.name.toLowerCase()}</p>
-                                    <p><span className="font-semibold">Dilihat:</span> {kehilangan.jumlah_dilihat} kali</p>
-                                    <p><span className="font-semibold">Hubungi WA:</span> <a href={`https://wa.me/` + kehilangan.user_whatsapp} target="_blank" className="text-blue-500 hover:underline" rel="noreferrer">{kehilangan.user_whatsapp}</a></p>
+                                    <p className="capitalize"><span className="font-semibold">Provinsi:</span> {temuan.provinsi ? temuan.provinsi.name.toLowerCase() : '-'}</p>
+                                    <p className="capitalize"><span className="font-semibold">Kota:</span> {temuan.kota ? temuan.kota.name.toLowerCase() : '-'}</p>
+                                    <p><span className="font-semibold">Dilihat:</span> {temuan.jumlah_dilihat} kali</p>
+                                    <p><span className="font-semibold">Hubungi WA:</span> <a href={`https://wa.me/` + temuan.user_whatsapp} target="_blank" className="text-blue-500 hover:underline" rel="noreferrer">{temuan.user_whatsapp}</a></p>
                                 </div>
                             </div>
                         </div>
@@ -144,10 +144,10 @@ export default function KehilanganList({ auth }) {
                             </div>
                         )}
 
-                        <ModalKomentar id={kehilangan.id} name="hilang" />
+                        <ModalKomentar id={temuan.id} name="temuan" />
                     </div>
                 </div>
-                <PredictCard id={kehilangan.id} name="hilang" />
+                <PredictCard id={temuan.id} name="temuan" />
             </div>
 
         </AuthenticatedLayout>

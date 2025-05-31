@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Temuan;
+use App\Models\LaporTemuan;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,7 +10,7 @@ class TemuanController extends Controller
 {
     public function index()
     {
-        $temuan = Temuan::where('user_whatsapp', auth()->user()->whatsapp)
+        $temuan = LaporTemuan::where('user_whatsapp', auth()->user()->whatsapp)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -23,9 +23,10 @@ class TemuanController extends Controller
 
     public function show($id)
     {
-        $temuan = Temuan::findOrFail($id);
+        $temuan = LaporTemuan::with('provinsi', 'kota')
+        ->findOrFail($id);
 
-        return Inertia::render('temuan/TemuanDetail', [
+        return Inertia::render('temuan/TemuanShow', [
             'temuan' => $temuan,
         ]);
     }
@@ -51,7 +52,7 @@ class TemuanController extends Controller
             'kota_temuan' => 'nullable|string', 
         ]);
 
-        Temuan::create([
+        LaporTemuan::create([
             'user_whatsapp' => $request->user()->whatsapp,
             'deskripsi' => $request->deskripsi,
             'provinsi_temuan' => $request->provinsi_temuan,
@@ -68,7 +69,7 @@ class TemuanController extends Controller
 
     public function edit($id)
     {
-        $temuan = Temuan::findOrFail($id);
+        $temuan = LaporTemuan::findOrFail($id);
         return inertia('temuan/TemuanEdit', [
             'temuan' => $temuan,
         ]);
@@ -89,7 +90,7 @@ class TemuanController extends Controller
         ]);
         
         // dd($validated);
-        $temuan = Temuan::findOrFail($id);
+        $temuan = LaporTemuan::findOrFail($id);
         $temuan->update($validated);
 
 
@@ -98,7 +99,7 @@ class TemuanController extends Controller
 
     public function destroy($id)
     {
-        $temuan = Temuan::findOrFail($id);
+        $temuan = LaporTemuan::findOrFail($id);
         $temuan->delete();
 
         return redirect()->route('temuan.index')->with('success', 'Laporan temuan berhasil dihapus.');

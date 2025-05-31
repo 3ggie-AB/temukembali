@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "@inertiajs/react";
 
 
-export default function ModalKomentar({ id }) {
+export default function ModalKomentar({ id, name }) {
     const [isOpen, setIsOpen] = useState(false);
     const [translateY, setTranslateY] = useState(0);
     const [komentar, setKomentar] = useState([]);
@@ -34,7 +34,7 @@ export default function ModalKomentar({ id }) {
 
     const fetchKomentar = async () => {
         try {
-            const res = await axios.get(`/komentar-hilang/${id}`);
+            const res = await axios.get(`/komentar-${name}/${id}`);
             setKomentar(res.data);
         } catch (err) {
             console.error("Gagal fetch komentar:", err);
@@ -44,7 +44,7 @@ export default function ModalKomentar({ id }) {
     const handleKirimKomentar = async () => {
         if (!isiKomentar.trim()) return;
         try {
-            await axios.post(`/komentar-hilang/${id}`, {
+            await axios.post(`/komentar-${name}/${id}`, {
                 komentar: isiKomentar
             });
             setIsiKomentar("");

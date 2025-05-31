@@ -3,14 +3,14 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-export default function PredictCard({ id, onClick }) {
+export default function PredictCard({ id, onClick, name }) {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (!id) return;
 
-        axios.get(`/predict/manual-hilang-${id}`)
+        axios.get(`/predict/manual-${name}-${id}`)
             .then((res) => {
                 setData(res.data.data)
             })
