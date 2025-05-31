@@ -42,7 +42,6 @@ class TemuanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_whatsapp' => 'required|string',
             'deskripsi' => 'required|string|max:255',
             'tanggal_ditemukan' => 'required|date',
             'barang_kategori' => 'required|string',
@@ -57,7 +56,7 @@ class TemuanController extends Controller
             'deskripsi' => $request->deskripsi,
             'provinsi_temuan' => $request->provinsi_temuan,
             'kota_temuan' => $request->kota_temuan,
-            'tanggal_temuan' => $request->tanggal_ditemukan, // sesuaikan nama field
+            'tanggal_temuan' => $request->tanggal_ditemukan,
             'barang_kategori' => $request->barang_kategori,
             'barang_warna' => $request->barang_warna,
             'barang_merk' => $request->barang_merk,
@@ -70,36 +69,38 @@ class TemuanController extends Controller
     public function edit($id)
     {
         $temuan = Temuan::findOrFail($id);
-
-        return Inertia::render('Temuan/TemuanEdit', [
+        return inertia('temuan/TemuanEdit', [
             'temuan' => $temuan,
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $temuan = Temuan::findOrFail($id);
-
-        $request->validate([
-            'deskripsi' => 'required|string|max:255',
+        dd($request->all);
+        $validated = $request->validate([
+            'deskripsi' => 'required|string|max:1000',
             'tanggal_ditemukan' => 'required|date',
-            'barang_kategori' => 'required|string',
-            'barang_warna' => 'required|string',
-            'barang_merk' => 'nullable|string',
-            'status' => 'required|string',
+            'provinsi_temuan' => 'nullable|string|max:255',
+            'kota_temuan' => 'nullable|string|max:255',
+            'barang_kategori' => 'nullable|string|max:255',
+            'barang_warna' => 'nullable|string|max:255',
+            'barang_merk' => 'nullable|string|max:255',
+            'status' => 'required|string|in:Ditemukan,Baru,Diproses,Selesai',
         ]);
-
-        $temuan->update([
-            'deskripsi' => $request->deskripsi,
-            'tanggal_temuan' => $request->tanggal_ditemukan,
-            'barang_kategori' => $request->barang_kategori,
-            'barang_warna' => $request->barang_warna,
-            'barang_merk' => $request->barang_merk,
-            'status' => $request->status,
-        ]);
+        
+        dd($validated);
 
 
-        return redirect()->route('temuan.index')->with('success', 'Laporan temuan berhasil diperbarui.');
+        // mapping tanggal
+        $validated['tanggal_temuan'] = $validated['tanggal_ditemukan'];
+        unset($validated['tanggal_ditemukan']);
+        
+        // dd($validated);
+        $temuan = Temuan::findOrFail($id);
+        $temuan->update($validated);
+
+
+        return redirect()->route('temuan.index')->with('success', 'Terima Kasih Data Temuan berhasil diperbarui.');
     }
 
     public function destroy($id)

@@ -16,7 +16,7 @@ export default function Welcome({ auth }) {
                         Temu Kembali
                     </h1>
                     <p className="max-w-xl mx-auto text-base md:text-xl text-blue-800/90 dark:text-gray-200 mb-8 font-medium leading-relaxed">
-                        Platform <span className="font-bold text-blue-600 dark:text-blue-400">Laporan</span> & <span className="font-bold text-blue-400 dark:text-blue-300">Temuan</span> Barang hilang yang mudah, aman, dan cepat.  
+                        Platform Sosial <span className="font-bold text-blue-600 dark:text-blue-400">Laporan</span> & <span className="font-bold text-blue-400 dark:text-blue-300">Temuan</span> Barang hilang yang mudah, aman, dan cepat.  
                         Bergabung dan Membantu Sesama
                     </p>
 
@@ -26,7 +26,7 @@ export default function Welcome({ auth }) {
                                 href={route('dashboard')}
                                 className="col-span-2 sm:col-auto px-8 py-3 rounded-full bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 transition"
                             >
-                                Dashboard Kamu
+                                Beranda Kamu
                             </Link>
                         ) : (
                             <>

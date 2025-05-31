@@ -39,7 +39,7 @@ Route::middleware(['auth','wa.verified'])->group(function () {
     Route::get('/temuan/create', [TemuanController::class, 'create'])->name('temuan.create');
     Route::post('/temuan', [TemuanController::class, 'store'])->name('temuan.store');
     Route::get('/temuan/{id}', [TemuanController::class, 'show'])->name('temuan.show');
-    Route::get('/temuan/saya/{id}/edit', [TemuanController::class, 'edit'])->name('temuan.edit');
+    Route::get('/temuan/{id}/edit', [TemuanController::class, 'edit'])->name('temuan.edit');
     Route::put('/temuan/{id}', [TemuanController::class, 'update'])->name('temuan.update');
     Route::delete('/temuan/{id}', [TemuanController::class, 'destroy'])->name('temuan.destroy');
 });

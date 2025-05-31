@@ -51,16 +51,6 @@ export default function TemuanCreate({ auth }) {
                     <form onSubmit={handleSubmit}>
 
                         <div className="mb-4">
-                            <div className="mb-4">
-                                <label htmlFor="user_whatsapp">Nomor WhatsApp</label>
-                                <input
-                                    type="number"
-                                    id="user_whatsapp"
-                                    value={data.user_whatsapp}
-                                    onChange={(e) => setData("user_whatsapp", e.target.value)}
-                                    required
-                                />
-                            </div>
                             <label htmlFor="deskripsi" className="block font-medium text-gray-700 dark:text-gray-300">
                                 Deskripsi
                             </label>

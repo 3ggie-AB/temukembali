@@ -76,7 +76,7 @@ function ActionDropdown({ itemId }) {
 }
 
 export default function KehilanganList({ auth }) {
-    const { kehilangan, flash = {} } = usePage().props; // <-- tambahkan flash di sini
+    const { kehilangan, flash = {} } = usePage().props;
     const [search, setSearch] = useState("");
     const [showAlert, setShowAlert] = useState(!!flash.success);
 
@@ -128,21 +128,22 @@ export default function KehilanganList({ auth }) {
                         </div>
                     )}
                 <div className="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-                    <div className="mb-3 flex flex-col md:flex-row md:justify-between gap-2">
+                    <div className="mb-3 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
                         <Link
                             href={route("kehilangan.create")}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
                         >
                             Lapor Kehilangan
                         </Link>
                         <input
                             type="text"
-                            className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 w-full md:w-64"
+                            className="w-full md:w-64 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 dark:text-white"
                             placeholder="Cari deskripsi, status, dll..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
+
 
                     {filtered.length === 0 ? (
                         <p className="text-gray-600 dark:text-gray-300">
@@ -154,16 +155,16 @@ export default function KehilanganList({ auth }) {
                                 <thead>
                                     <tr>
                                         <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-tl-xl">
+                                            No
+                                        </th>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-tl-xl">
                                             Deskripsi
                                         </th>
                                         <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
-                                            Tanggal Hilang
+                                            Warna
                                         </th>
                                         <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
                                             Kategori
-                                        </th>
-                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
-                                            Warna
                                         </th>
                                         <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
                                             Merk
@@ -171,14 +172,17 @@ export default function KehilanganList({ auth }) {
                                         <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
                                             Status
                                         </th>
+                                        <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold">
+                                            Tanggal Hilang
+                                        </th>
                                         <th className="px-4 py-3 text-center bg-blue-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-tr-xl">
                                             Aksi
                                         </th>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((item, idx) => (
-                                        <tr
+                                    </thead>
+                                    <tbody>
+                                        {filtered.map((item, idx) => (
+                                            <tr
                                             key={item.id}
                                             className="bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow hover:bg-gray-50 dark:hover:bg-gray-700 text-center rounded-xl"
                                             style={{
@@ -187,21 +191,27 @@ export default function KehilanganList({ auth }) {
                                                 marginBottom: "8px",
                                                 overflow: "hidden",
                                             }}
-                                        >
-                                            <td className="px-4 py-3 first:rounded-bl-xl last:rounded-br-xl">
-                                                {item.deskripsi}
-                                            </td>
-                                            <td className="px-4 py-3">{new Date(item.tanggal_hilang).toLocaleDateString()}</td>
-                                            <td className="px-4 py-3">{item.barang_kategori}</td>
+                                            >
+                                            <td className="px-4 py-3">{idx + 1}</td>
+                                            <td className="px-4 py-3">{item.deskripsi}</td>
                                             <td className="px-4 py-3">{item.barang_warna}</td>
+                                            <td className="px-4 py-3">{item.barang_kategori}</td>
                                             <td className="px-4 py-3">{item.barang_merk}</td>
                                             <td className="px-4 py-3">{item.status}</td>
+                                            <td className="px-4 py-3">
+                                                {(() => {
+                                                    const date = new Date(item.tanggal_hilang);
+                                                    const pad = (n) => String(n).padStart(2, "0");
+                                                    return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
+                                                })()}
+                                            </td>
                                             <td className="px-4 py-3 text-center relative">
                                                 <ActionDropdown itemId={item.id} />
                                             </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+
                             </table>
                         </div>
                     )}

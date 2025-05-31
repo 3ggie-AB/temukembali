@@ -33,7 +33,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </NavLink>
 
                                 <NavLink href={route('temuan.index')} active={route().current('dashboard')}>
-                                    Daftar Laporan
+                                    Daftar Temuan
                                 </NavLink>
                             </div>
 
