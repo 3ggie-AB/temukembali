@@ -69,7 +69,11 @@ class TemuanController extends Controller
 
     public function edit($id)
     {
-        $temuan = LaporTemuan::findOrFail($id);
+        $temuan = LaporTemuan::
+        when(auth()->user()->role == 'user', function ($query) {
+            return $query->where('user_whatsapp', auth()->user()->whatsapp);
+        })->
+        findOrFail($id);
         return inertia('temuan/TemuanEdit', [
             'temuan' => $temuan,
         ]);

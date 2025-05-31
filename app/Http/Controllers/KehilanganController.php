@@ -80,7 +80,11 @@ class KehilanganController extends Controller
 
     public function edit($id)
     {
-        $kehilangan = LaporHilang::with(['provinsi', 'kota'])->findOrFail($id);
+        $kehilangan = LaporHilang::with(['provinsi', 'kota'])
+        ->when(auth()->user()->role == 'user', function ($query) {
+            return $query->where('user_whatsapp', auth()->user()->whatsapp);
+        })
+        ->findOrFail($id);
         // dd($kehilangan);
 
         return Inertia::render('kehilangan/KehilanganEdit', [
