@@ -5,6 +5,7 @@ import { Provinsi } from '@/Components/laravolt/Provinsi';
 import { Kota } from '@/Components/laravolt/Kota';
 
 export default function KehilanganEdit({ auth, kehilangan }) {
+    console.log(kehilangan.tanggal_hilang);
     const { data, setData, put, processing, errors } = useForm({
         deskripsi: kehilangan.deskripsi || '',
         provinsi_hilang: kehilangan.provinsi_hilang || '',

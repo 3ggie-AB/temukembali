@@ -2,6 +2,8 @@ import { useForm } from '@inertiajs/react';
 import React, { useState, useEffect, useRef } from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Provinsi } from '@/Components/laravolt/Provinsi';
+import { Kota } from '@/Components/laravolt/Kota';
 
 export default function TemuanCreate({ auth }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -12,9 +14,7 @@ export default function TemuanCreate({ auth }) {
         barang_kategori: "",
         barang_warna: "",
         barang_merk: "",
-        status: "ditemukan", 
-        provinsi_hilang: "", 
-        kota_hilang: "",  
+        status: "ditemukan",
     });
 
     function handleSubmit(e) {
@@ -25,19 +25,19 @@ export default function TemuanCreate({ auth }) {
     }
 
     const [provinsiId, setProvinsiId] = useState('');
-    
-        useEffect(() => {
-            setProvinsiId(data.provinsi_hilang || '');
-            setData('kota_hilang', '');
-        }, [data.provinsi_hilang]);
-    
-        const handleProvinsiChange = (id) => {
-            setData('provinsi_hilang', id);
-        };
-    
-        const handleKotaChange = (id) => {
-            setData('kota_hilang', id);
-        };
+
+    useEffect(() => {
+        setProvinsiId(data.provinsi_temuan || '');
+        setData('kota_temuan', '');
+    }, [data.provinsi_temuan]);
+
+    const handleProvinsiChange = (id) => {
+        setData('provinsi_temuan', id);
+    };
+
+    const handleKotaChange = (id) => {
+        setData('kota_temuan', id);
+    };
 
     return (
         <AuthenticatedLayout
@@ -70,12 +70,14 @@ export default function TemuanCreate({ auth }) {
                                 <label htmlFor="provinsi_temuan" className="block font-medium text-gray-700 dark:text-gray-300">
                                     Provinsi
                                 </label>
-                                <input
-                                    type="text"
-                                    id="provinsi_temuan"
+                                <Provinsi
                                     value={data.provinsi_temuan}
-                                    onChange={(e) => setData("provinsi_temuan", e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    onChange={(id) => {
+                                        setData('provinsi_temuan', id);
+                                        setData('kota_temuan', '');
+                                    }}
+                                    className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.provinsi_temuan ? 'border-red-500' : 'border-gray-300'
+                                        }`}
                                 />
                                 {errors.provinsi_temuan && <p className="text-red-600 text-sm mt-1">{errors.provinsi_temuan}</p>}
                             </div>
@@ -84,12 +86,13 @@ export default function TemuanCreate({ auth }) {
                                 <label htmlFor="kota_temuan" className="block font-medium text-gray-700 dark:text-gray-300">
                                     Kota
                                 </label>
-                                <input
-                                    type="text"
-                                    id="kota_temuan"
+                                <Kota
+                                    ProvinsiKode={data.provinsi_temuan}
                                     value={data.kota_temuan}
-                                    onChange={(e) => setData("kota_temuan", e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                                    onChange={(id) => setData('kota_temuan', id)}
+                                    className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.kota_temuan ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    disabled={!data.provinsi_temuan}
                                 />
                                 {errors.kota_temuan && <p className="text-red-600 text-sm mt-1">{errors.kota_temuan}</p>}
                             </div>
