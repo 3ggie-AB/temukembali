@@ -59,10 +59,11 @@ export function Provinsi({ onChange, className }) {
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
-                    <CommandInput
+                    <input
+                        type="text"
+                        className=" mx-auto mt-3 w-4/5 px-4 py-2 text-sm rounded-lg mb-2"
                         placeholder="Cari provinsi..."
                         value={search}
-                        onValueChange={setSearch}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                     <CommandList>
