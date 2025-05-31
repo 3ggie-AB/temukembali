@@ -25,7 +25,7 @@ export default function TemuanEdit({ auth, temuan }) {
 
     const submit = (e) => {
         e.preventDefault();
-        put(route('temuan.update', temuan.id));
+        put(route('temuan.update', temuan), data);
     };
 
     return (
@@ -43,9 +43,8 @@ export default function TemuanEdit({ auth, temuan }) {
                             <textarea
                                 value={data.deskripsi}
                                 onChange={(e) => setData('deskripsi', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.deskripsi ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.deskripsi ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                 rows={3}
                             />
                             {errors.deskripsi && <p className="text-red-600 text-sm">{errors.deskripsi}</p>}
@@ -61,9 +60,8 @@ export default function TemuanEdit({ auth, temuan }) {
                                         setData('provinsi_temuan', id);
                                         setData('kota_temuan', '');
                                     }}
-                                    className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                        errors.provinsi_temuan ? 'border-red-500' : 'border-gray-300'
-                                    }`}
+                                    className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.provinsi_temuan ? 'border-red-500' : 'border-gray-300'
+                                        }`}
                                 />
                                 {errors.provinsi_temuan && <p className="text-red-600 text-sm mt-1">{errors.provinsi_temuan}</p>}
                             </div>
@@ -73,9 +71,8 @@ export default function TemuanEdit({ auth, temuan }) {
                                     ProvinsiKode={data.provinsi_temuan}
                                     value={data.kota_temuan}
                                     onChange={(id) => setData('kota_temuan', id)}
-                                    className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                        errors.kota_temuan ? 'border-red-500' : 'border-gray-300'
-                                    }`}
+                                    className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.kota_temuan ? 'border-red-500' : 'border-gray-300'
+                                        }`}
                                     disabled={!data.provinsi_temuan}
                                 />
                                 {errors.kota_temuan && <p className="text-red-600 text-sm mt-1">{errors.kota_temuan}</p>}
@@ -89,9 +86,8 @@ export default function TemuanEdit({ auth, temuan }) {
                                 type="date"
                                 value={data.tanggal_temuan}
                                 onChange={(e) => setData('tanggal_temuan', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.tanggal_temuan ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.tanggal_temuan ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                             />
                             {errors.tanggal_temuan && <p className="text-red-600 text-sm">{errors.tanggal_temuan}</p>}
                         </div>
@@ -102,9 +98,8 @@ export default function TemuanEdit({ auth, temuan }) {
                                 type="text"
                                 value={data.barang_kategori}
                                 onChange={(e) => setData('barang_kategori', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.barang_kategori ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_kategori ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                             />
                             {errors.barang_kategori && <p className="text-red-600 text-sm">{errors.barang_kategori}</p>}
                         </div>
@@ -115,9 +110,8 @@ export default function TemuanEdit({ auth, temuan }) {
                                 type="text"
                                 value={data.barang_warna}
                                 onChange={(e) => setData('barang_warna', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.barang_warna ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_warna ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                             />
                             {errors.barang_warna && <p className="text-red-600 text-sm">{errors.barang_warna}</p>}
                         </div>
@@ -128,11 +122,26 @@ export default function TemuanEdit({ auth, temuan }) {
                                 type="text"
                                 value={data.barang_merk}
                                 onChange={(e) => setData('barang_merk', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.barang_merk ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_merk ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                             />
                             {errors.barang_merk && <p className="text-red-600 text-sm">{errors.barang_merk}</p>}
+                        </div>
+
+                        <div className="md:col-span-2">
+                            <label htmlFor="status" className="block font-medium text-gray-700 dark:text-gray-300">Status</label>
+                            <select
+                                id="status"
+                                value={data.status}
+                                onChange={(e) => setData("status", e.target.value)}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_merk ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                            >
+                                <option value="Ditemukan">Belum ditemukan</option>
+                                <option value="Baru">Baru</option>
+                                <option value="Diproses">Diproses</option>
+                                <option value="Selesai">Selesai</option>
+                            </select>
                         </div>
 
                         <div className="md:col-span-2">
@@ -140,9 +149,8 @@ export default function TemuanEdit({ auth, temuan }) {
                             <textarea
                                 value={data.barang_cirikhusus}
                                 onChange={(e) => setData('barang_cirikhusus', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.barang_cirikhusus ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_cirikhusus ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                 rows={3}
                             />
                             {errors.barang_cirikhusus && <p className="text-red-600 text-sm">{errors.barang_cirikhusus}</p>}

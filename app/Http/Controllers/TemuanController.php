@@ -76,24 +76,17 @@ class TemuanController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request->all);
         $validated = $request->validate([
             'deskripsi' => 'required|string|max:1000',
-            'tanggal_ditemukan' => 'required|date',
+            'barang_cirikhusus' => 'required|string|max:1000',
+            'tanggal_temuan' => 'required|date',
             'provinsi_temuan' => 'nullable|string|max:255',
             'kota_temuan' => 'nullable|string|max:255',
             'barang_kategori' => 'nullable|string|max:255',
             'barang_warna' => 'nullable|string|max:255',
             'barang_merk' => 'nullable|string|max:255',
-            'status' => 'required|string|in:Ditemukan,Baru,Diproses,Selesai',
+            'status' => 'required|string',
         ]);
-        
-        dd($validated);
-
-
-        // mapping tanggal
-        $validated['tanggal_temuan'] = $validated['tanggal_ditemukan'];
-        unset($validated['tanggal_ditemukan']);
         
         // dd($validated);
         $temuan = Temuan::findOrFail($id);

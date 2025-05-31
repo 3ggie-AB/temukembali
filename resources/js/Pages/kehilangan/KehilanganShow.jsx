@@ -48,7 +48,7 @@ export default function KehilanganList({ auth }) {
             }
         >
             <Head title="List Kehilangan" />
-            <div className="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div className="py-6 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <div className="mb-3 mt-21">
                         <div className="mb-3">
