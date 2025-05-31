@@ -36,7 +36,7 @@ export default function VerifikasiWaForm({ user, token }) {
                     Verifikasi WhatsApp
                 </h2>
                 <p className="text-center text-gray-600 dark:text-gray-300 mb-6">
-                    Cek pesan yang dikirimkan ke WhatsApp Kamu untuk verifikasi Akun.
+                    Silakan periksa pesan WhatsApp kamu untuk verifikasi akun.
                 </p>
 
                 <form onSubmit={submit} className="space-y-5">
@@ -104,19 +104,29 @@ export default function VerifikasiWaForm({ user, token }) {
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={processing}
-                        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-white-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                        {processing && (
-                            <svg className="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                            </svg>
-                        )}
-                        Verifikasi Akun
-                    </button>
+                    <div className="flex gap-2">
+                        <button type="submit" disabled={processing} className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-60 disabled:cursor-not-allowed">
+                            {processing && (
+                                <svg className="animate-spin h-5 w-5 mr-2 text-white" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                </svg>
+                            )}
+                            Verifikasi Akun
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                window.axios.post(route('kirim.ulang.token'), { nomor: user.nomor_wa })
+                                    .then(() => alert('Token berhasil dikirim ulang ke WhatsApp Anda.'))
+                                    .catch(() => alert('Gagal mengirim ulang token.'));
+                            }}
+                            disabled={processing}
+                            className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            Kirim Ulang Token
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
