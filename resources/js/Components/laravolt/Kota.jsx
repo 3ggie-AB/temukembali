@@ -19,7 +19,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function Kota({ onChange, className, ProvinsiKode }) {
+export function Kota({ onChange, className, ProvinsiKode, value }) {
     const [kota, setKota] = React.useState([])
     const [selected, setSelected] = React.useState("")
     const [open, setOpen] = React.useState(false)
@@ -30,7 +30,14 @@ export function Kota({ onChange, className, ProvinsiKode }) {
 
         fetch("/api/kota/" + ProvinsiKode)
             .then((res) => res.json())
-            .then((data) => setKota(data))
+            .then((data) => {
+                setKota(data)
+                if (value) {
+                    setSelected(value.toString()) // jika value tersedia
+                } else {
+                    setSelected("") // kalau kosong, kosongkan pilihan
+                }
+            })
             .catch(() => setKota([]))
     }, [ProvinsiKode])
 

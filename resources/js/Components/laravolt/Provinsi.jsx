@@ -19,7 +19,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function Provinsi({ onChange, className }) {
+export function Provinsi({ onChange, className,value }) {
     const [provinsi, setProvinsi] = React.useState([])
     const [selected, setSelected] = React.useState("")
     const [open, setOpen] = React.useState(false)
@@ -28,7 +28,14 @@ export function Provinsi({ onChange, className }) {
     React.useEffect(() => {
         fetch("/api/provinsi")
             .then((res) => res.json())
-            .then((data) => setProvinsi(data))
+            .then((data) => {
+                setProvinsi(data)
+                if (value) {
+                    setSelected(value.toString()) // jika value tersedia
+                } else {
+                    setSelected("") // kalau kosong, kosongkan pilihan
+                }
+            })
             .catch(() => setProvinsi([]))
     }, [])
 

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { Link } from "@inertiajs/react";
+
 
 export default function ModalKomentar({ id }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -96,30 +98,34 @@ export default function ModalKomentar({ id }) {
                                 </p>
                             ) : komentar.map((item, i) => (
                                 <div key={i} className="bg-gray-100 dark:bg-gray-700 p-3 rounded flex gap-3">
-                                    <img
-                                        src={item.user?.photo || "/default/profile.png"}
-                                        alt={item.user?.name}
-                                        className="w-10 h-10 rounded-full object-cover"
-                                    />
+                                    <Link href={`/user/${item.user.whatsapp}`}>
+                                        <img
+                                            src={item.user?.photo || "/default/profile.png"}
+                                            alt={item.user?.name}
+                                            className="w-10 h-10 rounded-full object-cover"
+                                        />
+                                    </Link>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 dark:text-white">
-                                            {'@' + (item.user?.name || "Pengguna")} - {
-                                                item.created_at ? (() => {
-                                                    const created = new Date(item.created_at);
-                                                    const now = new Date();
-                                                    const diffMs = now - created;
-                                                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                                                    const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
+                                        <Link href={`/user/${item.user.whatsapp}`}>
+                                            <p className="text-xs font-medium text-gray-400 dark:text-white">
+                                                {'@' + (item.user?.name || "Pengguna")} - {
+                                                    item.created_at ? (() => {
+                                                        const created = new Date(item.created_at);
+                                                        const now = new Date();
+                                                        const diffMs = now - created;
+                                                        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                                                        const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
 
-                                                    if (diffHours > 0) {
-                                                        return `${diffHours} jam yang lalu`;
-                                                    } else if (diffMinutes > 0) {
-                                                        return `${diffMinutes} menit yang lalu`;
-                                                    } else {
-                                                        return 'Baru saja';
-                                                    }
-                                                })() : 'Waktu tidak tersedia'}
-                                        </p>
+                                                        if (diffHours > 0) {
+                                                            return `${diffHours} jam yang lalu`;
+                                                        } else if (diffMinutes > 0) {
+                                                            return `${diffMinutes} menit yang lalu`;
+                                                        } else {
+                                                            return 'Baru saja';
+                                                        }
+                                                    })() : 'Waktu tidak tersedia'}
+                                            </p>
+                                        </Link>
 
                                         <p className="text-sm text-gray-800 dark:text-white">{item.komentar}</p>
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Head, usePage } from "@inertiajs/react";
+import { Head, usePage, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import ModalKomentar from "./ModalKomentar";
+import PredictCard from "./PredictCard";
 
 export default function KehilanganList({ auth }) {
     const { kehilangan } = usePage().props;
@@ -83,74 +84,52 @@ export default function KehilanganList({ auth }) {
                         </div>
                     </div>
                 </div>
-
-                
-
-                <div class="max-w-sm mt-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                    <a href="#">
-                        <img class="rounded-t-lg" src={'/berita/motorbeat.webp'} alt="" />
-                    </a>
-                    <div class="p-5">
-                        <a href="#">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Kendaraan Roda Dua</h5>
-                        </a>
-                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Deksripsi Kendaraan Motor Beat, Kehilangan Dengan Ciri Khas, Warna, Merk, Status, Tanggal Hilang.</p>
-                        <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Read more
-                            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-
                 <div className="bg-white mx-auto sm:px-6 lg:px-8 p-6 mt-4 shadow-sm sm:rounded-lg">
                     <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Komentar :</h3>
 
-                    {loading && (
+                    {loading && !komentarList.user && (
                         <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3 mb-4">
-                            <p className="text-gray-500 mb-4">Sedang Memuat Komentar...</p>
-                        </div>
-                    )}
-                    {error && (
-                        <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3 mb-4">
-                            <p className="text-gray-500 mb-4">Tidak ada komentar...</p>
+                            <p className="text-gray-500 mb-4">Sedang Memuat Komentarr...</p>
                         </div>
                     )}
 
                     <div className="space-y-4">
-                        {!loading && !komentarList && (
+                        {error && !loading && !komentarList.user && (
                             <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3 mb-4">
                                 <p className="text-gray-500 mb-4">Tidak ada komentar...</p>
                             </div>
                         )}
 
-                        {!error && !loading && komentarList && (
+                        {!loading && komentarList && komentarList.user && (
                             <div key={komentarList.id} className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg shadow flex gap-3">
-                                <img
-                                    src={komentarList.user?.photo || "/default/profile.png"}
-                                    alt={komentarList.user?.name}
-                                    className="w-10 h-10 rounded-full object-cover"
-                                />
+                                <Link href={`/user/${komentarList.user?.whatsapp}`}>
+                                    <img
+                                        src={komentarList.user?.photo || "/default/profile.png"}
+                                        alt={komentarList.user?.name}
+                                        className="w-10 h-10 rounded-full object-cover"
+                                    />
+                                </Link>
                                 <div>
-                                    <p className="text-xs font-medium text-gray-400 dark:text-white">
-                                        {'@' + (komentarList.user?.name || "Pengguna")} - {
-                                            komentarList.created_at ? (() => {
-                                                const created = new Date(komentarList.created_at);
-                                                const now = new Date();
-                                                const diffMs = now - created;
-                                                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                                                const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
+                                    <Link href={`/user/${komentarList.user?.whatsapp}`}>
+                                        <p className="text-xs font-medium text-gray-400 dark:text-white">
+                                            {'@' + (komentarList.user?.name || "Pengguna")} - {
+                                                komentarList.created_at ? (() => {
+                                                    const created = new Date(komentarList.created_at);
+                                                    const now = new Date();
+                                                    const diffMs = now - created;
+                                                    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                                                    const diffMinutes = Math.floor(diffMs / (1000 * 60)) % 60;
 
-                                                if (diffHours > 0) {
-                                                    return `${diffHours} jam yang lalu`;
-                                                } else if (diffMinutes > 0) {
-                                                    return `${diffMinutes} menit yang lalu`;
-                                                } else {
-                                                    return 'Baru saja';
-                                                }
-                                            })() : 'Waktu tidak tersedia'}
-                                    </p>
+                                                    if (diffHours > 0) {
+                                                        return `${diffHours} jam yang lalu`;
+                                                    } else if (diffMinutes > 0) {
+                                                        return `${diffMinutes} menit yang lalu`;
+                                                    } else {
+                                                        return 'Baru saja';
+                                                    }
+                                                })() : 'Waktu tidak tersedia'}
+                                        </p>
+                                    </Link>
 
                                     <p className="text-sm text-gray-800 dark:text-white">{komentarList.komentar}</p>
 
@@ -168,7 +147,9 @@ export default function KehilanganList({ auth }) {
                         <ModalKomentar id={kehilangan.id} />
                     </div>
                 </div>
+                <PredictCard id={kehilangan.id} />
             </div>
+
         </AuthenticatedLayout>
     );
 }
