@@ -20,9 +20,7 @@ export default function ForgotPassword({ status }) {
             <Head title="Forgot Password" />
 
             <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                Forgot your password? No problem. Just let us know your email
-                address and we will email you a password reset link that will
-                allow you to choose a new one.
+                Lupa kata sandi Anda? Tidak masalah. Kami akan mengirimkan Kode Verifikasi untuk mengatur ulang kata sandi Anda Lewat Nomor Whatsapp yang anda masukkan.
             </div>
 
             {status && (
@@ -32,21 +30,27 @@ export default function ForgotPassword({ status }) {
             )}
 
             <form onSubmit={submit}>
-                <TextInput
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={data.email}
-                    className="mt-1 block w-full"
-                    isFocused={true}
-                    onChange={(e) => setData('email', e.target.value)}
-                />
+                <div className="mt-4 flex rounded-md shadow-sm">
+                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                        +62
+                    </span>
+                    <input
+                        type="tel"
+                        name="whatsapp"
+                        id="whatsapp"
+                        className="flex-1 block w-full rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        placeholder="8123456789"
+                        value={data.whatsapp}
+                        onChange={(e) => setData('whatsapp', e.target.value)}
+                        required
+                    />
+                </div>
 
-                <InputError message={errors.email} className="mt-2" />
+                <InputError message={errors.whatsapp} className="mt-2" />
 
                 <div className="mt-4 flex items-center justify-end">
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Email Password Reset Link
+                        Kirim Kode Verifikasi
                     </PrimaryButton>
                 </div>
             </form>

@@ -5,10 +5,10 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 
-export default function ResetPassword({ token, email }) {
+export default function ResetPassword({ token, whatsapp }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        token: token,
-        email: email,
+        token: token || '',
+        'whatsapp': whatsapp || '',
         password: '',
         password_confirmation: '',
     });
@@ -24,19 +24,21 @@ export default function ResetPassword({ token, email }) {
     return (
         <GuestLayout>
             <Head title="Reset Password" />
-
+        <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                Masukkan Token yang telah Anda terima melalui Whatsapp, dan atur ulang kata sandi Anda.
+            </div>
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="token" value="Token" />
 
                     <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
+                        id="token"
+                        type="text"
+                        name="token"
+                        value={data.token}
                         className="mt-1 block w-full"
                         autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e) => setData('token', e.target.value)}
                     />
 
                     <InputError message={errors.email} className="mt-2" />

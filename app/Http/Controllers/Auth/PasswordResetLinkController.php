@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FontteController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Str;
 
 class PasswordResetLinkController extends Controller
 {
@@ -27,25 +30,29 @@ class PasswordResetLinkController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
+        $request['whatsapp'] = '+62' . ltrim(str_replace(' ', '', $request->whatsapp), '0');
         $request->validate([
-            'email' => 'required|email',
+            'whatsapp' => 'required|exists:users,whatsapp',
         ]);
-
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
-        $status = Password::sendResetLink(
-            $request->only('email')
+        $token = Str::random(6);
+        $kirimPesan = FontteController::kirimPesan(
+            "Halo! Berikut adalah token untuk mengatur ulang kata sandi Anda:\n\n🔐 Token: ".$token.
+            "\n\nSilakan gunakan token ini untuk mengatur ulang kata sandi Anda melalui tautan berikut:\n\n".
+            url('/reset-password/' . str_replace('+', '', $request->whatsapp) . '?token=' . $token).
+            "\n\nJika Anda tidak merasa meminta reset kata sandi, abaikan pesan ini.".
+            "\nTerima kasih!",
+            str_replace('+', '', $request->whatsapp),
         );
-
-        if ($status == Password::RESET_LINK_SENT) {
-            return back()->with('status', __($status));
-        }
-
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
+        DB::table('password_reset_tokens')->where('email', str_replace('+', '', $request->whatsapp))->delete();
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => str_replace('+', '', $request->whatsapp)],
+            [
+                'token' => $token,
+                'created_at' => now()
+            ]
+        );
+        return redirect()->route('password.reset', ['whatsapp' => str_replace('+', '', $request->whatsapp)]);
     }
 }
