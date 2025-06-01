@@ -161,7 +161,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             href={route("dashboard")}
                             active={route().current("dashboard")}
                         >
-                            Dashboard
+                            Beranda
                         </ResponsiveNavLink>
                     </div>
                     <div className="space-y-1 pb-2 pt-1">

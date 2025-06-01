@@ -26,7 +26,7 @@ export default function Welcome({ auth }) {
                                 href={route('dashboard')}
                                 className="col-span-2 sm:col-auto px-8 py-3 rounded-full bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 transition"
                             >
-                                Beranda Kamu
+                                Kunjungi Beranda
                             </Link>
                         ) : (
                             <>
@@ -86,13 +86,13 @@ export default function Welcome({ auth }) {
                                 <span className="font-semibold text-green-600">•</span> Verifikasi Registrasi <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
                             </li>
                             <li>
-                                <span className="font-semibold text-green-600">•</span> Verifikasi Lupa Password <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded ml-1">Segera Hadir</span>
+                                <span className="font-semibold text-green-600">•</span> Verifikasi Lupa Password <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
                             </li>
                             <li>
-                                <span className="font-semibold text-green-600">•</span> Notifikasi Laporan Kehilangan berhasil <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded ml-1">Segera Hadir</span>
+                                <span className="font-semibold text-green-600">•</span> Notifikasi Laporan Kehilangan berhasil <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
                             </li>
                             <li>
-                                <span className="font-semibold text-green-600">•</span> Notifikasi Laporan Temuan berhasil <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded ml-1">Segera Hadir</span>
+                                <span className="font-semibold text-green-600">•</span> Notifikasi Laporan Temuan berhasil <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
                             </li>
                             <li>
                                 <span className="font-semibold text-green-600">•</span> Komentar Pada temuan kamu <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
