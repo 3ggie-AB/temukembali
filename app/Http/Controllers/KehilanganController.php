@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\LaporHilang;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class KehilanganController extends Controller
@@ -26,7 +27,7 @@ class KehilanganController extends Controller
                 'barang_merk',
             ]);
 
-         return inertia('kehilangan/KehilanganList', [
+        return inertia('kehilangan/KehilanganList', [
             'kehilangan' => $kehilangan,
         ]);
     }
@@ -34,7 +35,7 @@ class KehilanganController extends Controller
 
     public function create()
     {
-       return Inertia::render('kehilangan/KehilanganCreate');
+        return Inertia::render('kehilangan/KehilanganCreate');
     }
 
     public function store(Request $request)
@@ -48,8 +49,16 @@ class KehilanganController extends Controller
             'barang_warna' => 'nullable|string|max:255',
             'barang_merk' => 'nullable|string|max:255',
             'barang_cirikhusus' => 'nullable|string',
-            // 'status' default 'hilang', tidak wajib input user
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $photo = null;
+        if ($request->hasFile('photo')) {
+            $filename = Str::uuid() . '.' . $request->file('photo')->getClientOriginalExtension();
+            $folder = 'foto_kehilangan';
+            $path = $request->file('photo')->move(public_path($folder), $filename);
+            $photo = $folder . '/' . $filename;
+        }
 
         LaporHilang::create([
             'user_whatsapp' => auth()->user()->whatsapp,
@@ -60,6 +69,7 @@ class KehilanganController extends Controller
             'barang_kategori' => $request->barang_kategori,
             'barang_warna' => $request->barang_warna,
             'barang_merk' => $request->barang_merk,
+            'photo' => $photo,
             'barang_cirikhusus' => $request->barang_cirikhusus,
             'status' => 'hilang',
             'jumlah_dilihat' => 0,
@@ -71,7 +81,7 @@ class KehilanganController extends Controller
     {
         $kehilangan = LaporHilang::with('provinsi', 'kota')
             ->findOrFail($id);
-            // dd($kehilangan);
+        // dd($kehilangan);
 
         return Inertia::render('kehilangan/KehilanganShow', [
             'kehilangan' => $kehilangan,
@@ -81,10 +91,10 @@ class KehilanganController extends Controller
     public function edit($id)
     {
         $kehilangan = LaporHilang::with(['provinsi', 'kota'])
-        ->when(auth()->user()->role == 'user', function ($query) {
-            return $query->where('user_whatsapp', auth()->user()->whatsapp);
-        })
-        ->findOrFail($id);
+            ->when(auth()->user()->role == 'user', function ($query) {
+                return $query->where('user_whatsapp', auth()->user()->whatsapp);
+            })
+            ->findOrFail($id);
         // dd($kehilangan);
 
         return Inertia::render('kehilangan/KehilanganEdit', [
@@ -102,6 +112,39 @@ class KehilanganController extends Controller
                 'barang_cirikhusus' => $kehilangan->barang_cirikhusus,
             ]
         ]);
+    }
+
+    public function edit_foto($id)
+    {
+        $kehilangan = LaporHilang::with(['provinsi', 'kota'])
+            ->when(auth()->user()->role == 'user', function ($query) {
+                return $query->where('user_whatsapp', auth()->user()->whatsapp);
+            })
+            ->findOrFail($id);
+
+        return Inertia::render('kehilangan/KehilanganEditFoto', [
+            'kehilangan' => $kehilangan
+        ]);
+    }
+
+    public function upload_foto(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        $photo = null;
+        if ($request->hasFile('photo')) {
+            $filename = Str::uuid() . '.' . $request->file('photo')->getClientOriginalExtension();
+            $folder = 'foto_kehilangan';
+            $path = $request->file('photo')->move(public_path($folder), $filename);
+            $photo = $folder . '/' . $filename;
+        }
+
+        LaporHilang::where('id', $id)->update([
+            'photo' => $photo,
+        ]);
+
+        return redirect()->route('kehilangan.index')->with('success', 'Laporan berhasil diperbarui.');
     }
 
     public function update(Request $request, $id)

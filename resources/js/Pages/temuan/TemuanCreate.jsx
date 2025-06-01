@@ -175,6 +175,28 @@ export default function TemuanCreate({ auth }) {
                             {errors.status && <p className="text-red-600 text-sm mt-1">{errors.status}</p>}
                         </div>
 
+                        <div className="md:col-span-2 mb-5">
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Gambar Barang
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setData('photo', e.target.files[0])}
+                                className={`block w-full text-sm text-gray-700 dark:text-white
+        file:mr-4 file:py-2 file:px-4
+        file:rounded file:border-0
+        file:text-sm file:font-semibold
+        file:bg-blue-50 file:text-blue-700
+        hover:file:bg-blue-100
+        dark:file:bg-gray-600 dark:file:text-white
+        ${errors.photo ? 'border-red-500' : 'border border-gray-300 dark:border-gray-600'}
+    `}
+                            />
+
+                            {errors.photo && <p className="text-red-600 text-sm">{errors.photo}</p>}
+                        </div>
+
                         <div className="flex justify-end gap-2">
                             <Link
                                 href={route("temuan.index")}

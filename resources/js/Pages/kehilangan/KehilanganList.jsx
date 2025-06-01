@@ -66,7 +66,15 @@ function ActionDropdown({ itemId }) {
                             role="menuitem"
                             tabIndex="-1"
                             onClick={() => setOpen(false)}>
-                            Perbarui
+                            Perbarui Data
+                        </Link>
+                        <Link
+                            href={`/kehilangan/${itemId}/edit-foto`}
+                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-700"
+                            role="menuitem"
+                            tabIndex="-1"
+                            onClick={() => setOpen(false)}>
+                            Perbarui Foto
                         </Link>
                     </div>
                 </div>

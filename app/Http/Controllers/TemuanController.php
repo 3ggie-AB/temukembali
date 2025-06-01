@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LaporTemuan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class TemuanController extends Controller
@@ -50,7 +51,16 @@ class TemuanController extends Controller
             'barang_merk' => 'nullable|string',
             'provinsi_temuan' => 'nullable|string',
             'kota_temuan' => 'nullable|string', 
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $photo = null;
+        if ($request->hasFile('photo')) {
+            $filename = Str::uuid() . '.' . $request->file('photo')->getClientOriginalExtension();
+            $folder = 'foto_temuan';
+            $path = $request->file('photo')->move(public_path($folder), $filename);
+            $photo = $folder . '/' . $filename;
+        }
 
         LaporTemuan::create([
             'user_whatsapp' => $request->user()->whatsapp,
@@ -60,6 +70,7 @@ class TemuanController extends Controller
             'tanggal_temuan' => $request->tanggal_ditemukan,
             'barang_kategori' => $request->barang_kategori,
             'barang_warna' => $request->barang_warna,
+            'photo' => $photo,
             'barang_merk' => $request->barang_merk,
             'status' => $request->status ?? 'ditemukan',
         ]);
@@ -100,6 +111,39 @@ class TemuanController extends Controller
 
         return redirect()->route('temuan.index')->with('success', 'Terima Kasih Data Temuan berhasil diperbarui.');
     }
+    public function edit_foto($id)
+    {
+        $temuan = LaporTemuan::with(['provinsi', 'kota'])
+            ->when(auth()->user()->role == 'user', function ($query) {
+                return $query->where('user_whatsapp', auth()->user()->whatsapp);
+            })
+            ->findOrFail($id);
+
+        return Inertia::render('temuan/TemuanEditFoto', [
+            'temuan' => $temuan
+        ]);
+    }
+
+    public function upload_foto(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        $photo = null;
+        if ($request->hasFile('photo')) {
+            $filename = Str::uuid() . '.' . $request->file('photo')->getClientOriginalExtension();
+            $folder = 'foto_temuan';
+            $path = $request->file('photo')->move(public_path($folder), $filename);
+            $photo = $folder . '/' . $filename;
+        }
+
+        LaporTemuan::where('id', $id)->update([
+            'photo' => $photo,
+        ]);
+
+        return redirect()->route('kehilangan.index')->with('success', 'Laporan berhasil diperbarui.');
+    }
+
 
     public function destroy($id)
     {

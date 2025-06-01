@@ -33,6 +33,8 @@ Route::middleware(['auth','wa.verified'])->group(function () {
     Route::post('/kehilangan', [KehilanganController::class, 'store'])->name('kehilangan.store');
     Route::get('/kehilangan/detail/{id}', [KehilanganController::class, 'show'])->name('kehilangan.detail');
     Route::get('/kehilangan/{id}/edit', [KehilanganController::class, 'edit'])->name('kehilangan.edit');
+    Route::get('/kehilangan/{id}/edit-foto', [KehilanganController::class, 'edit_foto'])->name('kehilangan.edit-foto');
+    Route::post('/kehilangan/{id}/upload-foto', [KehilanganController::class, 'upload_foto'])->name('kehilangan.upload-foto');
     Route::put('/kehilangan/{id}', [KehilanganController::class, 'update'])->name('kehilangan.update');
 
     Route::get('/temuan', [TemuanController::class, 'index'])->name('temuan.index');
@@ -40,6 +42,8 @@ Route::middleware(['auth','wa.verified'])->group(function () {
     Route::post('/temuan', [TemuanController::class, 'store'])->name('temuan.store');
     Route::get('/temuan/detail/{id}', [TemuanController::class, 'show'])->name('temuan.show');
     Route::get('/temuan/{id}/edit', [TemuanController::class, 'edit'])->name('temuan.edit');
+    Route::get('/temuan/{id}/edit-foto', [TemuanController::class, 'edit_foto'])->name('temuan.edit-foto');
+    Route::post('/temuan/{id}/upload-foto', [TemuanController::class, 'upload_foto'])->name('temuan.upload-foto');
     Route::put('/temuan/{id}', [TemuanController::class, 'update'])->name('temuan.update');
     Route::delete('/temuan/{id}', [TemuanController::class, 'destroy'])->name('temuan.destroy');
 });
