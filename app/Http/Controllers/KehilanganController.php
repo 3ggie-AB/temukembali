@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\LaporHilang;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Carbon\Carbon;
+Carbon::setLocale('id');
 
 class KehilanganController extends Controller
 {
@@ -60,7 +62,7 @@ class KehilanganController extends Controller
             $photo = $folder . '/' . $filename;
         }
 
-        LaporHilang::create([
+        $laporan = LaporHilang::create([
             'user_whatsapp' => auth()->user()->whatsapp,
             'deskripsi' => $request->deskripsi,
             'provinsi_hilang' => $request->provinsi_hilang,
@@ -74,6 +76,18 @@ class KehilanganController extends Controller
             'status' => 'hilang',
             'jumlah_dilihat' => 0,
         ]);
+
+        $notifWa = FontteController::kirimPesan(
+            "Terima kasih, laporan Anda telah berhasil dibuat.\n\n📄 Detail Laporan Kehilangan :\n" .
+            "• Nama Kategori Barang: " . $laporan->barang_kategori . "\n" .
+            "• Warna Barang: " . $laporan->barang_warna . "\n" .
+            "• Merk Barang: " . $laporan->barang_merk . "\n" .
+            "• Deskripsi Barang: " . $laporan->deskripsi . "\n" .
+            "• Tanggal Hilang: " . Carbon::parse($laporan->tanggal_hilang)->isoFormat('D MMMM YYYY') . "\n" .
+            "• Lokasi Hilang: " . ucwords(strtolower($laporan->provinsi->name)) . ", " . ucwords(strtolower($laporan->kota->name)) . "\n\n" .
+            "Laporan Anda akan disimpan dalam sistem kami dan dapat dilihat oleh pengguna lain. Semoga informasi ini dapat membantu mempercepat proses penemuan barang Anda.",
+            $laporan->user_whatsapp
+        );
 
         return redirect()->route('kehilangan.index')->with('success', 'Terima Kasih Kamu Berhasil Melaporkan!');
     }

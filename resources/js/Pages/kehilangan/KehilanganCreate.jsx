@@ -14,6 +14,7 @@ export default function KehilanganCreate({ auth }) {
         barang_warna: '',
         barang_merk: '',
         barang_cirikhusus: '',
+        photo: null,
     });
 
     const [provinsiId, setProvinsiId] = useState('');
@@ -33,7 +34,9 @@ export default function KehilanganCreate({ auth }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('kehilangan.store'));
+        post(route('kehilangan.store'), {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -58,9 +61,8 @@ export default function KehilanganCreate({ auth }) {
                             <textarea
                                 value={data.deskripsi}
                                 onChange={(e) => setData('deskripsi', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.deskripsi ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.deskripsi ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                 rows={3}
                             />
                             {errors.deskripsi && <p className="text-red-600 text-sm">{errors.deskripsi}</p>}
@@ -71,39 +73,37 @@ export default function KehilanganCreate({ auth }) {
                             {/* Provinsi */}
                             <div>
                                 <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Pilih Provinsi Hilang
+                                    Pilih Provinsi Hilang
                                 </label>
                                 <Provinsi
-                                className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.provinsi_hilang ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                                onChange={(id) => {
-                                    setData('provinsi_hilang', id);
-                                    setData('kota_hilang', '');
-                                }}
-                                value={data.provinsi_hilang}
+                                    className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.provinsi_hilang ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    onChange={(id) => {
+                                        setData('provinsi_hilang', id);
+                                        setData('kota_hilang', '');
+                                    }}
+                                    value={data.provinsi_hilang}
                                 />
                                 {errors.provinsi_hilang && (
-                                <p className="text-red-600 text-sm mt-1">{errors.provinsi_hilang}</p>
+                                    <p className="text-red-600 text-sm mt-1">{errors.provinsi_hilang}</p>
                                 )}
                             </div>
 
                             {/* Kota */}
                             <div>
                                 <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Pilih Kota Hilang
+                                    Pilih Kota Hilang
                                 </label>
                                 <Kota
-                                className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.kota_hilang ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                                ProvinsiKode={data.provinsi_hilang}
-                                onChange={(id) => setData('kota_hilang', id)}
-                                value={data.kota_hilang}
-                                disabled={!data.provinsi_hilang}
+                                    className={`mt-1 w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.kota_hilang ? 'border-red-500' : 'border-gray-300'
+                                        }`}
+                                    ProvinsiKode={data.provinsi_hilang}
+                                    onChange={(id) => setData('kota_hilang', id)}
+                                    value={data.kota_hilang}
+                                    disabled={!data.provinsi_hilang}
                                 />
                                 {errors.kota_hilang && (
-                                <p className="text-red-600 text-sm mt-1">{errors.kota_hilang}</p>
+                                    <p className="text-red-600 text-sm mt-1">{errors.kota_hilang}</p>
                                 )}
                             </div>
                         </div>
@@ -118,9 +118,8 @@ export default function KehilanganCreate({ auth }) {
                                 type="date"
                                 value={data.tanggal_hilang}
                                 onChange={(e) => setData('tanggal_hilang', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.tanggal_hilang ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.tanggal_hilang ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                             />
                             {errors.tanggal_hilang && <p className="text-red-600 text-sm">{errors.tanggal_hilang}</p>}
                         </div>
@@ -134,9 +133,8 @@ export default function KehilanganCreate({ auth }) {
                                 type="text"
                                 value={data.barang_kategori}
                                 onChange={(e) => setData('barang_kategori', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.barang_kategori ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_kategori ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                             />
                             {errors.barang_kategori && (
                                 <p className="text-red-600 text-sm">{errors.barang_kategori}</p>
@@ -152,9 +150,8 @@ export default function KehilanganCreate({ auth }) {
                                 type="text"
                                 value={data.barang_warna}
                                 onChange={(e) => setData('barang_warna', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.barang_warna ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_warna ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                             />
                             {errors.barang_warna && <p className="text-red-600 text-sm">{errors.barang_warna}</p>}
                         </div>
@@ -168,11 +165,32 @@ export default function KehilanganCreate({ auth }) {
                                 type="text"
                                 value={data.barang_merk}
                                 onChange={(e) => setData('barang_merk', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.barang_merk ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_merk ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                             />
                             {errors.barang_merk && <p className="text-red-600 text-sm">{errors.barang_merk}</p>}
+                        </div>
+
+                        <div className="md:col-span-2">
+                            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Gambar Barang
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setData('photo', e.target.files[0])}
+                                className={`block w-full text-sm text-gray-700 dark:text-white
+        file:mr-4 file:py-2 file:px-4
+        file:rounded file:border-0
+        file:text-sm file:font-semibold
+        file:bg-blue-50 file:text-blue-700
+        hover:file:bg-blue-100
+        dark:file:bg-gray-600 dark:file:text-white
+        ${errors.photo ? 'border-red-500' : 'border border-gray-300 dark:border-gray-600'}
+    `}
+                            />
+
+                            {errors.photo && <p className="text-red-600 text-sm">{errors.photo}</p>}
                         </div>
 
                         {/* Ciri Khas */}
@@ -183,9 +201,8 @@ export default function KehilanganCreate({ auth }) {
                             <textarea
                                 value={data.barang_cirikhusus}
                                 onChange={(e) => setData('barang_cirikhusus', e.target.value)}
-                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${
-                                    errors.barang_cirikhusus ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                className={`mt-1 block w-full border rounded-md shadow-sm dark:bg-gray-700 dark:text-white ${errors.barang_cirikhusus ? 'border-red-500' : 'border-gray-300'
+                                    }`}
                                 rows={3}
                             />
                             {errors.barang_cirikhusus && (

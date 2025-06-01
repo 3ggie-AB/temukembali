@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\LaporTemuan;
+use Carbon\Carbon;
+Carbon::setLocale('id');
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -25,7 +27,7 @@ class TemuanController extends Controller
     public function show($id)
     {
         $temuan = LaporTemuan::with('provinsi', 'kota')
-        ->findOrFail($id);
+            ->findOrFail($id);
 
         return Inertia::render('temuan/TemuanShow', [
             'temuan' => $temuan,
@@ -50,7 +52,7 @@ class TemuanController extends Controller
             'barang_warna' => 'required|string',
             'barang_merk' => 'nullable|string',
             'provinsi_temuan' => 'nullable|string',
-            'kota_temuan' => 'nullable|string', 
+            'kota_temuan' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -62,7 +64,7 @@ class TemuanController extends Controller
             $photo = $folder . '/' . $filename;
         }
 
-        LaporTemuan::create([
+        $laporan = LaporTemuan::create([
             'user_whatsapp' => $request->user()->whatsapp,
             'deskripsi' => $request->deskripsi,
             'provinsi_temuan' => $request->provinsi_temuan,
@@ -75,16 +77,28 @@ class TemuanController extends Controller
             'status' => $request->status ?? 'ditemukan',
         ]);
 
+        $notifWa = FontteController::kirimPesan(
+            "Terima kasih, laporan Anda telah berhasil dibuat.\n\n📄 Detail Laporan Temuan :\n" .
+            "• Nama Kategori Barang: " . $laporan->barang_kategori . "\n" .
+            "• Warna Barang: " . $laporan->barang_warna . "\n" .
+            "• Merk Barang: " . $laporan->barang_merk . "\n" .
+            "• Deskripsi Barang: " . $laporan->deskripsi . "\n" .
+            "• Tanggal Temuan: " . Carbon::parse($laporan->tanggal_hilang)->isoFormat('D MMMM YYYY') . "\n" .
+            "• Lokasi Temuan: " . ucwords(strtolower($laporan->provinsi->name)) . ", " . ucwords(strtolower($laporan->kota->name)) . "\n\n" .
+            "Terima kasih telah melaporkan barang temuan. Informasi ini akan ditampilkan kepada pengguna lain yang mungkin kehilangan barang tersebut. Semoga laporan Anda membantu pemilik yang sah menemukan barangnya kembali.",
+            $laporan->user_whatsapp
+        );
+
         return redirect()->route('temuan.index')->with('success', 'Laporan temuan berhasil dibuat.');
     }
 
     public function edit($id)
     {
         $temuan = LaporTemuan::
-        when(auth()->user()->role == 'user', function ($query) {
-            return $query->where('user_whatsapp', auth()->user()->whatsapp);
-        })->
-        findOrFail($id);
+            when(auth()->user()->role == 'user', function ($query) {
+                return $query->where('user_whatsapp', auth()->user()->whatsapp);
+            })->
+            findOrFail($id);
         return inertia('temuan/TemuanEdit', [
             'temuan' => $temuan,
         ]);
@@ -103,7 +117,7 @@ class TemuanController extends Controller
             'barang_merk' => 'nullable|string|max:255',
             'status' => 'required|string',
         ]);
-        
+
         // dd($validated);
         $temuan = LaporTemuan::findOrFail($id);
         $temuan->update($validated);
