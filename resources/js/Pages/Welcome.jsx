@@ -83,7 +83,7 @@ export default function Welcome({ auth }) {
                         </h4>
                         <ul className="text-blue-800 dark:text-gray-200 text-sm md:text-base space-y-2 pl-2">
                             <li>
-                                <span className="font-semibold text-green-600">•</span> Verifikasi Registrasi <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded ml-1">Segera Hadir</span>
+                                <span className="font-semibold text-green-600">•</span> Verifikasi Registrasi <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
                             </li>
                             <li>
                                 <span className="font-semibold text-green-600">•</span> Verifikasi Lupa Password <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded ml-1">Segera Hadir</span>
@@ -95,13 +95,13 @@ export default function Welcome({ auth }) {
                                 <span className="font-semibold text-green-600">•</span> Notifikasi Laporan Temuan berhasil <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded ml-1">Segera Hadir</span>
                             </li>
                             <li>
-                                <span className="font-semibold text-green-600">•</span> Komentar Pada temuan kamu <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded ml-1">Segera Hadir</span>
+                                <span className="font-semibold text-green-600">•</span> Komentar Pada temuan kamu <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
                             </li>
                             <li>
                                 <span className="font-semibold text-green-600">•</span> Komentar Pada kehilangan kamu <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
                             </li>
                             <li>
-                                <span className="font-semibold text-green-600">•</span> Temuan Pengguna lain mirip 50% dengan kehilangan kamu <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded ml-1">Segera Hadir</span>
+                                <span className="font-semibold text-green-600">•</span> Temuan Pengguna lain mirip 50% dengan kehilangan kamu <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded ml-1">Aktif</span>
                             </li>
                         </ul>
                         <div className="mt-3 text-xs text-blue-500 dark:text-blue-200">
